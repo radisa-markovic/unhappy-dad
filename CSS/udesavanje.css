@@ -1,0 +1,47 @@
+#divKontejnerSvega
+{
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    /*height: 700px;*/
+}
+
+#kontejnerCaletaIZene
+{
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    border: solid black 1px;
+}
+
+#caletovKontejner
+{
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    border: solid black 1px;
+}
+
+#zeninKontejner
+{
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    border: solid black 1px;
+}
+
+#kontejnerDece
+{
+    display: flex;
+    flex-grow: 1;
+    border: solid black 1px;
+    flex-direction: row;
+}
+
+.kontejnerJednogDeteta
+{
+    display: flex;
+    border: solid black 1px;
+    flex-grow: 1;
+    flex-direction: column;
+}
