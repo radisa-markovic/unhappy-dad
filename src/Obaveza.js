@@ -1,13 +1,12 @@
 export class Obaveza
 {
-    constructor(ime, prezime, godine, nivoZadovoljstva, prohtevZaParama)
+    constructor(ime, prezime, godine, prohtevZaParama)
     {
         this.ime = ime;
         this.prezime = prezime;
         this.godine = godine;
-        this.nivoZadovoljstva = nivoZadovoljstva;
+        this.nivoZadovoljstva = 0;
         this.prohtevZaParama = prohtevZaParama;
-        this.vremePoslednjePosete = 0;//bem ga, mozda bolje 0 da stavim, ili da stavim "sad"
     }
 
     vratiSadrzajObaveze()

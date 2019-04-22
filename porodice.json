@@ -1,98 +1,92 @@
 {
-    "porodice": 
-    [
+  "porodice": [
+    {
+      "id": 0,
+      "ime": "Milosav",
+      "prezime": "Marković",
+      "godine": 54,
+      "nivoZadovoljstva": 0,
+      "novacOdPlate": 30000,
+      "tajniStek": 100000,
+      "zena": {
+        "ime": "Milica",
+        "prezime": "Marković",
+        "godine": 51,
+        "nivoZadovoljstva": 0,
+        "prohtevZaParama": 50
+      },
+      "deca": [
         {
-            "id": 0,
-            "ime": "Milosav",
-            "prezime": "Marković",
-            "godine": 54,
-            "nivoZadovoljstva": 0,
-            "novacOdPlate": 30000,
-            "tajniStek": 100000,
-            "zena": 
-            {
-                "ime": "Milica",
-                "prezime": "Marković",
-                "godine": 51,
-                "nivoZadovoljstva": 0,
-                "prohtevZaParama": 50
-            },
-            "deca":
-            [
-                {
-                    "ime": "Branko",
-                    "prezime": "Marković",
-                    "godine": 30,
-                    "nivoZadovoljstva": 0,
-                    "prohtevZaParama": 30
-                },
-                {
-                    "ime": "Dobrivoje",
-                    "prezime": "Marković",
-                    "godine": 27,
-                    "nivoZadovoljstva": 0,
-                    "prohtevZaParama": 17
-                },
-                {
-                    "ime": "Ilija",
-                    "prezime": "Marković",
-                    "godine": 25,
-                    "nivoZadovoljstva": 0,
-                    "prohtevZaParama": 39
-                }
-            ]
+          "ime": "Branko",
+          "prezime": "Marković",
+          "godine": 30,
+          "nivoZadovoljstva": 0,
+          "prohtevZaParama": 30
         },
         {
-            "id": 1,
-            "ime": "Milan",
-            "prezime": "Vještica",
-            "godine": 22,
-            "nivoZadovoljstva": 50,
-            "novacOdPlate": 20000,
-            "tajniStek": 80000,
-            "zena":
-            {
-                "ime": "Irena",
-                "prezime": "Vještica",
-                "godine": 22,
-                "nivoZadovoljstva": 17,
-                "prohtevZaParama": 70
-            },
-            "deca":[]
+          "ime": "Dobrivoje",
+          "prezime": "Marković",
+          "godine": 27,
+          "nivoZadovoljstva": 0,
+          "prohtevZaParama": 17
         },
         {
-            "id": 2,
-            "ime": "Vladimir",
-            "prezime": "Barjaktarević",
-            "godine": 35,
-            "nivoZadovoljstva": 49,
-            "novacOdPlate": 48000,
-            "tajniStek": 0,
-            "zena":
-            {
-                "ime": "Dragana",
-                "prezime": "Barjaktarević",
-                "godine": 29,
-                "nivoZadovoljstva": 80,
-                "prohtevZaParama": 45
-            },
-            "deca": 
-            [
-                {
-                    "ime": "Aleksandar",
-                    "prezime": "Barjaktarević",
-                    "godine": 17,
-                    "nivoZadovoljstva": 27,
-                    "prohtevZaParama": 20
-                },
-                {
-                    "ime": "Ivana",
-                    "prezime": "Barjaktarević",
-                    "godine": 22,
-                    "nivoZadovoljstva": 47,
-                    "prohtevZaParama": 29
-                }
-            ]
+          "ime": "Ilija",
+          "prezime": "Marković",
+          "godine": 25,
+          "nivoZadovoljstva": 0,
+          "prohtevZaParama": 39
         }
-    ]
+      ]
+    },
+    {
+      "id": 1,
+      "ime": "Milan",
+      "prezime": "Vještica",
+      "godine": 22,
+      "nivoZadovoljstva": 50,
+      "novacOdPlate": 20000,
+      "tajniStek": 80000,
+      "zena": {
+        "ime": "Irena",
+        "prezime": "Vještica",
+        "godine": 22,
+        "nivoZadovoljstva": 17,
+        "prohtevZaParama": 70
+      },
+      "deca": []
+    },
+    {
+      "id": 2,
+      "ime": "Vladimir",
+      "prezime": "Barjaktarević",
+      "godine": 35,
+      "nivoZadovoljstva": 49,
+      "novacOdPlate": 48000,
+      "tajniStek": 0,
+      "zena": {
+        "ime": "Dragana",
+        "prezime": "Barjaktarević",
+        "godine": 29,
+        "nivoZadovoljstva": 80,
+        "prohtevZaParama": 45
+      },
+      "deca": [
+        {
+          "ime": "Aleksandar",
+          "prezime": "Barjaktarević",
+          "godine": 17,
+          "nivoZadovoljstva": 27,
+          "prohtevZaParama": 20
+        },
+        {
+          "ime": "Ivana",
+          "prezime": "Barjaktarević",
+          "godine": 22,
+          "nivoZadovoljstva": 47,
+          "prohtevZaParama": 29
+        }
+      ]
+    }
+  ]
 }

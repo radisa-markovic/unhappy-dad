@@ -5,20 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Nesrećni Radiša</title>
-    <link rel='stylesheet' href='./CSS/udesavanje.css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/united/bootstrap.min.css">
+    <link rel="stylesheet" href="./CSS/udesavanje.css">
 </head>
 <body>
-    <div id='divKontejnerSvega'>
+
+    <div class="header">
+      <div class="jumbotron">Nesrećni Radiša</div>
+    </div>
+
+
+    <div class="container">
         <div id='kontejnerSelektora'>
-            <select name='selIzborFamilije'> <!--fali event za popunu, ili da uradim staticku?-->
+            <select name='selIzborFamilije'> <!--fali event za popunjavanje, ili da uradim staticku?-->
+                <option value=0 selected>Marković</option>
+                <option value=1>Vještica</option>
+                <option value=2>Barjaktarević</option>
             </select>
-            <button name='btnPotvrde'>Potvrdi izbor i započni simulaciju</button> <!--kad se klikne, selektor prestaje sa radom-->
+            <button name='btnPotvrde' class="btn btn-primary">Potvrdi izbor i započni simulaciju</button> <!--kad se klikne, selektor prestaje sa radom-->
         </div>
-        <div id='kontejnerCaletaIZene'>
-            <div id='caletovKontejner'></div>
-            <div id='zeninKontejner'></div>
+        <div name='kontejnerCaletaIZene' class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div name='caletovKontejner' class="list-group"></div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div name='zeninKontejner' class="list-group"></div>
+                </div>
+            </div>
         </div>
         <div id='kontejnerDece'></div>
+    </div>
+
+    <button name="btnOverlay" class="btn btn-danger">Unesi porodicu</button><!--disposable-->
+    
+    <div id="overlay">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="container">
+                        <h3>Detalji o ocu:</h3>
+                        <div class="list-group">
+                            <input type="text" placeholder="Unesi ime">
+                            <input type="text" placeholder="Unesi prezime">
+                            <input type="number" placeholder="Unesi početno zadovoljstvo">
+                            <input type="number" placeholder="Unesi broj godina">
+                            <input type="number" placeholder="Uneti početni štek">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="container">
+                        <h3>Detalji o majci:</h3>
+                        <div class="list-group">
+                            <input type="text" placeholder="Unesi ime">
+                            <input type="text" placeholder="Unesi prezime">
+                            <input type="number" placeholder="Unesi početno zadovoljstvo">
+                            <input type="number" placeholder="Unesi broj godina">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-primary" id="btnPotvrdaPodataka">Potvrdi</button>
     </div>
     <script src='./dist/bundle.js'></script>
 </body>
