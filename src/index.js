@@ -1,15 +1,13 @@
 import { Cale } from './Cale.js';
 import { Zena } from './Zena.js';
 import { Dete } from './Dete.js';
-import { ucitajOverlay, ucitajFormeZaUnosDece } from './OverlayPonasanje.js';
+import { OverlayPonasanje } from './OverlayPonasanje.js';
 import { BazaPodatakaServis } from './BazaPodatakaServis.js';
 
 
-BazaPodatakaServis.vratiSvePorodice(popuniSelektor); //housework takozvani mora da ide u neki drugi fajl
-//jer, em je preglednije, em nije u skladu sa Uncle Bobom
+BazaPodatakaServis.vratiSvePorodice(popuniSelektor);
 document.querySelector('button[name="btnPotvrde"]').addEventListener("click", zapocniSimulaciju);
-//ucitajOverlay();//ovo je kao bitno...
-//ucitajFormeZaUnosDece();//mora da ima neki lepsi nacin da se postigne ista funkcinalnost..
+const ponasanjeOverlayForme = new OverlayPonasanje();
 
 function zapocniSimulaciju()
 {
@@ -21,7 +19,6 @@ function zapocniSimulaciju()
 
 function popuniSelektor(podaci)
 {
-    console.log(podaci[0].prezime);
     let selektor = document.querySelector("select");
     let i = 0;
     while(podaci[i])
@@ -46,11 +43,12 @@ function kreirajObjekteIzPodatka(podatak)
     cale.zena = zena;
     zena.muz = cale;
     
-    podatak.deca.forEach(element => {//srediti konstruktor za dete, jebem ga
+    podatak.deca.forEach(element => {
         let dete = new Dete(element.ime, element.prezime, element.godine, 0,
             element.prohtevZaParama, cale);
         cale.deca.push(dete);
         dete.nacrtajDete();
     });
-  
+    
+    console.log(JSON.stringify(cale), ["ime", "prezime", "godine"]);//cisto da vidim sta ce da se dobije kao rezultat
 }

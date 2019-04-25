@@ -29,7 +29,7 @@ export class BazaPodatakaServis
                'Accept': 'application/json',
                'Content-type': 'application/json'
             },
-            body: prosledjeniObjekat
+            body: prosledjeniObjekat //ovde ce da ide jedan JSON.stringify, pa objekat, pa {} i one moje metode...
         }).catch(greska => console.log(greska)); //najbezbolnije cu da resim problem selektora ako ga ovde...
         //...azuriram nakon sto se podatak ucita ovde
         //..ali sta se dogadja kad ponovo pokrenem aplikaciju, trebaju podaci da su tu?
