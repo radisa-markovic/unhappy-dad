@@ -1,11 +1,11 @@
 export class Cale
 {
-    constructor(ime, prezime, godine, novacOdPlate, tajniStek, zena)
+    constructor(ime, prezime, godine, nivoZadovoljstva, novacOdPlate, tajniStek, zena)
     {
         this.ime = ime;
         this.prezime = prezime;
         this.godine = godine;
-        this.nivoZadovoljstva = 0;
+        this.nivoZadovoljstva = 0;//ipak ce da se preracunava, koj ce mi inace djavo godine i ostale stvari...
         this.novacOdPlate = novacOdPlate;
         this.tajniStek = tajniStek;
         this.zena = zena;//prosledjivanje preko konstruktora vs preko funkcije

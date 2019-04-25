@@ -24,19 +24,27 @@
         <div name='kontejnerCaletaIZene' class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6">
-                    <div name='caletovKontejner' class="list-group"></div>
+                    <h3>Otac:</h3>
+                    <div name='caletovKontejner' class="list-group">    
+                    </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6">
-                    <div name='zeninKontejner' class="list-group"></div>
+                    <h3>Majka:</h3>
+                    <div name='zeninKontejner' class="list-group">
+                    </div>
                 </div>
             </div>
         </div>
-        <div id='kontejnerDece'></div>
+        <div class="container">
+            <h3>Deca:</h3>
+            <div class="row" id="kontejnerDece">
+
+            </div>
+        </div>
     </div>
 
-    <button name="btnOverlay" class="btn btn-danger">Unesi porodicu</button><!--disposable-->
+    <button name="btnOverlay" class="btn btn-danger">Unesi porodicu</button>
     
-    <!-- overlay i div "hell"-->
     <div id="overlay">
         <div class="container">
             <div class="row">
@@ -60,6 +68,7 @@
                             <input type="text" name="inpZeninoPrezimeOverlay" placeholder="Unesi prezime">
                             <input type="number" name="inpZeninoZadovoljstvoOverlay" placeholder="Unesi početno zadovoljstvo">
                             <input type="number" name="inpZenineGodineOverlay" placeholder="Unesi broj godina">
+                            <input type="number" name="inpZeninProhtevZaParama" placeholder="Unesi prohtev za parama">
                         </div>
                     </div>
                 </div>
@@ -71,7 +80,7 @@
             </div>
             <div class="container">
                 <div class="row" id="velikiKontejnerDeceOverlay">
-                    <!--ovde cu da ubacim decu kad izvrsim skriptu za onaj selekt za onChange-->
+                    
                 </div>
             </div>
         </div>

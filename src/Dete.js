@@ -12,7 +12,7 @@ export class Dete extends Obaveza
     nacrtajDete()
     {
         this.kontejnerDeteta = document.createElement('div');
-        this.kontejnerDeteta.className = 'kontejnerJednogDeteta';
+        this.kontejnerDeteta.className = 'list-group';
         this.kontejnerDeteta.innerHTML = super.vratiSadrzajObaveze();
         this.kontejnerDeteta.innerHTML += '<button name="btnPodmiti">Podmiti</button>';
 

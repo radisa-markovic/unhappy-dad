@@ -50,5 +50,4 @@ function kreirajObjekteIzPodatka(podatak)
         dete.nacrtajDete();
     });
     
-    console.log(JSON.stringify(cale), ["ime", "prezime", "godine"]);//cisto da vidim sta ce da se dobije kao rezultat
 }

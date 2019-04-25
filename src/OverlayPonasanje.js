@@ -1,3 +1,8 @@
+import { BazaPodatakaServis } from "./BazaPodatakaServis.js";
+import { Cale } from './Cale.js';
+import { Zena } from './Zena.js';
+import { Dete } from "./Dete.js";
+
 export class OverlayPonasanje
 {
     constructor()
@@ -22,10 +27,35 @@ export class OverlayPonasanje
 
         document.getElementById("btnPotvrdaPodataka").addEventListener("click", () => {
             this.kontejnerZaCeoOverlay.style.height = '0%';
-            console.log(this.vratiPodatkeIzCaletovihKontrola());
-            console.log(this.vratiPodatkeIzZeninihKontrola());
-            console.log(this.vratiPodatkeIzDetetovihKontrola(1));
-            console.log(this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDeteProhtevZaParama']")[1]);
+            let cale = this.ucitajCaletaIzKontrola();
+            let zena = this.ucitajZenuIzKontrola();
+            let porodicaJSONObliku = {
+                "ime": cale.ime,
+                "prezime": cale.prezime,
+                "godine": cale.godine,
+                "nivoZadovoljstva": cale.nivoZadovoljstva,
+                "zena":{
+                    "ime": zena.ime,
+                    "prezime": zena.prezime,
+                    "godine": zena.godine,
+                    "nivoZadovoljstva": zena.nivoZadovoljstva
+                },
+                "deca":
+                []
+            }
+            for(let i=0; i<this.kontejnerZaCeoOverlay.querySelector("input[name='inpOverlayBrojDece']").value; i++)
+            {
+                let privremenoDete = this.ucitajDeteIzKontrola(i);
+                let JSONPrivremenoDete = {
+                    "ime": privremenoDete.ime,
+                    "prezime": privremenoDete.prezime,
+                    "godine": privremenoDete.godine,
+                    "nivoZadovoljstva": privremenoDete.nivoZadovoljstva,
+                    "prohtevZaParama": privremenoDete.prohtevZaParama
+                };
+                porodicaJSONObliku.deca.push(JSONPrivremenoDete);
+            }
+            BazaPodatakaServis.dodajPorodicu(porodicaJSONObliku);
         });
     }
 
@@ -51,43 +81,36 @@ export class OverlayPonasanje
         }
     }
 
-    //sad, imam dve filozofije, da li da "rucno" pravim JSON ili da kreiram objekat, pa onda JSON.stringify()?
-    //mislim da je druga metoda "pouzdanija", sad cu da vidim njen ishod
-    vratiPodatkeIzCaletovihKontrola()
+    ucitajCaletaIzKontrola()
     {
-        let caletoviPodaciJSON = `
-            {
-                "ime": "${this.caletovDivOverlay.querySelector("input[name='inpCaletovoImeOverlay']").value}",
-                "prezime": "${this.caletovDivOverlay.querySelector("input[name='inpCaletovoPrezimeOverlay']").value}",
-                "godine": "${this.caletovDivOverlay.querySelector("input[name='inpCaletoveGodineOverlay']").value}",
-                "nivoZadovoljstva": "${this.caletovDivOverlay.querySelector("input[name='inpCaletovoZadovoljstvoOverlay']").value}",
-                "tajniStek": "${this.caletovDivOverlay.querySelector("input[name='inpCaletovStekOverlay']").value}"
-            }
-            `
-        return caletoviPodaciJSON;
+        let imeCaleta = this.caletovDivOverlay.querySelector("input[name='inpCaletovoImeOverlay']").value;
+        let prezimeCaleta = this.caletovDivOverlay.querySelector("input[name='inpCaletovoPrezimeOverlay']").value;
+        let godineCaleta = this.caletovDivOverlay.querySelector("input[name='inpCaletoveGodineOverlay']").value;
+        let nivoZadovoljstva = this.caletovDivOverlay.querySelector("input[name='inpCaletovoZadovoljstvoOverlay']").value;
+        let tajniStek = this.caletovDivOverlay.querySelector("input[name='inpCaletovStekOverlay']").value;
+            
+        return new Cale(imeCaleta, prezimeCaleta, godineCaleta, nivoZadovoljstva, 0, tajniStek, null);
     }
 
-    vratiPodatkeIzZeninihKontrola()
+    ucitajZenuIzKontrola()
     {
-        return `
-            {
-                "ime": "${this.zeninDivOverlay.querySelector("input[name='inpZeninoImeOverlay']").value}",
-                "prezime": "${this.zeninDivOverlay.querySelector("input[name='inpZeninoPrezimeOverlay']").value}",
-                "nivoZadovoljstva": "${this.zeninDivOverlay.querySelector("input[name='inpZeninoZadovoljstvoOverlay']").value}",
-                "godine": "${this.zeninDivOverlay.querySelector("input[name='inpZenineGodineOverlay']").value}"
-            }
-        `;
+        let ime = this.zeninDivOverlay.querySelector("input[name='inpZeninoImeOverlay']").value;
+        let prezime = this.zeninDivOverlay.querySelector("input[name='inpZeninoPrezimeOverlay']").value;
+        let nivoZadovoljstva = this.zeninDivOverlay.querySelector("input[name='inpZeninoZadovoljstvoOverlay']").value;
+        let godine = this.zeninDivOverlay.querySelector("input[name='inpZenineGodineOverlay']").value;
+        let prohtevZaParama = this.zeninDivOverlay.querySelector("input[name='inpZeninProhtevZaParama']").value;
+
+        return new Zena(ime, prezime, godine, prohtevZaParama);
     }
 
-    vratiPodatkeIzDetetovihKontrola(redniBrojDeteta)
+    ucitajDeteIzKontrola(redniBrojDeteta)
     {
-        return `
-        {
-            "ime": "${this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDeteIme']")[redniBrojDeteta].value}",
-            "prezime": "${this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDetePrezime']")[redniBrojDeteta].value}",
-            "godine": "${this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDeteGodine']")[redniBrojDeteta].value}",
-            "nivoZadovoljstva": "${this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDeteNivoZadovoljstva']")[redniBrojDeteta].value}",
-            "prohtevZaParama": "${this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDeteProhtevZaParama']")[redniBrojDeteta].value}"
-        }`
+        let ime = this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDeteIme']")[redniBrojDeteta].value;
+        let prezime = this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDetePrezime']")[redniBrojDeteta].value;
+        let godine = this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDeteGodine']")[redniBrojDeteta].value;
+        let nivoZadovoljstva = this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDeteNivoZadovoljstva']")[redniBrojDeteta].value;
+        let prohtevZaParama = this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDeteProhtevZaParama']")[redniBrojDeteta].value;
+        
+        return new Dete(ime, prezime, godine, nivoZadovoljstva, prohtevZaParama, null);
     }
 }
