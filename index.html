@@ -14,15 +14,12 @@
       <div class="jumbotron">Nesrećni Radiša</div>
     </div>
 
-
+    
     <div class="container">
         <div id='kontejnerSelektora'>
-            <select name='selIzborFamilije'> <!--fali event za popunjavanje, ili da uradim staticku?-->
-                <option value=0 selected>Marković</option>
-                <option value=1>Vještica</option>
-                <option value=2>Barjaktarević</option>
+            <select name='selIzborFamilije' class="form-control">
             </select>
-            <button name='btnPotvrde' class="btn btn-primary">Potvrdi izbor i započni simulaciju</button> <!--kad se klikne, selektor prestaje sa radom-->
+            <button name='btnPotvrde' class="btn btn-primary">Potvrdi izbor i započni</button>
         </div>
         <div name='kontejnerCaletaIZene' class="container">
             <div class="row">
@@ -39,18 +36,19 @@
 
     <button name="btnOverlay" class="btn btn-danger">Unesi porodicu</button><!--disposable-->
     
+    <!-- overlay i div "hell"-->
     <div id="overlay">
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6">
-                    <div class="container">
+                    <div class="container" id="caletovDivOverlay">
                         <h3>Detalji o ocu:</h3>
                         <div class="list-group">
-                            <input type="text" placeholder="Unesi ime">
-                            <input type="text" placeholder="Unesi prezime">
-                            <input type="number" placeholder="Unesi početno zadovoljstvo">
-                            <input type="number" placeholder="Unesi broj godina">
-                            <input type="number" placeholder="Uneti početni štek">
+                            <input type="text" name="inpCaletovoImeOverlay" placeholder="Unesi ime">
+                            <input type="text" name="inpCaletovoPrezimeOverlay" placeholder="Unesi prezime">
+                            <input type="number" name="inpCaletoveGodineOverlay" placeholder="Unesi broj godina">
+                            <input type="number" name="inpCaletovoZadovoljstvoOverlay" placeholder="Unesi početno zadovoljstvo">
+                            <input type="number" name="inpCaletovStekOverlay" placeholder="Uneti početni štek">
                         </div>
                     </div>
                 </div>
@@ -64,6 +62,16 @@
                             <input type="number" placeholder="Unesi broj godina">
                         </div>
                     </div>
+                </div>
+            </div>
+            <br/>
+            <div class="container">
+                <h3>Broj dece:</h3>
+                <input type="number" name="inpOverlayBrojDece" placeholder="Unesi broj dece">
+            </div>
+            <div class="container">
+                <div class="row" id="velikiKontejnerDeceOverlay">
+                    <!--ovde cu da ubacim decu kad izvrsim skriptu za onaj selekt za onChange-->
                 </div>
             </div>
         </div>

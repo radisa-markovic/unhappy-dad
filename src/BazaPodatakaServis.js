@@ -6,21 +6,23 @@ export const PUTANJA_DO_BAZE_PODATAKA = "http://localhost:3000";
 
 export class BazaPodatakaServis
 {
-   constructor(putanjaDoBazePodataka)
+   static vratiSvePorodice(callbackZaSelektor)
    {
-       this.putanjaDoBazePodataka = putanjaDoBazePodataka; 
+       fetch(PUTANJA_DO_BAZE_PODATAKA + "/porodice")
+       .then(odgovor => odgovor.json())
+       .then(odgovor => callbackZaSelektor(odgovor));//da vidim kako radi
    }
 
-   ucitajPorodicu(redniBroj, callbackZaObjekte)//mozda ima i neki callback parametar
+   static ucitajJednuPorodicu(redniBroj, callbackZaObjekte)//mozda ima i neki callback parametar
    {
-       fetch(this.putanjaDoBazePodataka + "/porodice/" + redniBroj)
+       fetch(PUTANJA_DO_BAZE_PODATAKA + "/porodice/" + redniBroj)
        .then(odgovor => odgovor.json())
        .then(odgovor => callbackZaObjekte(odgovor));
    }
 
-   dodajPorodicu(prosledjeniObjekat)
+   static dodajPorodicu(prosledjeniObjekat)
    {
-       fetch(this.putanjaDoBazePodataka + "/porodice/", {
+       fetch(PUTANJA_DO_BAZE_PODATAKA + "/porodice/", {
             method: "POST",
             headers:
             {

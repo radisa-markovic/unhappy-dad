@@ -7,7 +7,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    overflow: hidden;
+    overflow: scroll; /*umesto hidden, sad kao sva deca mogu da stanu*/
     z-index: 1;
     background-color: rgba(0,0,0,0.99);
     transition: 1s;
