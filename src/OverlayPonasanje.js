@@ -22,6 +22,10 @@ class OverlayPonasanje
             this.kontejnerZaCeoOverlay.style.height = '100%';
         });
 
+        this.kontejnerZaCeoOverlay.querySelector("button[name='btnPonisti']").addEventListener("click", () => {
+            this.kontejnerZaCeoOverlay.style.height = '0%';
+        });
+
         this.kontejnerZaCeoOverlay.querySelector("input[name='inpOverlayBrojDece']")
         .addEventListener("change", () => this.ucitajFormeZaUnosDece());//bez () se samo jednom izvrsava
 
