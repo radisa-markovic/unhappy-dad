@@ -2,15 +2,17 @@ import { Obaveza } from './Obaveza.js';
 
 export class Dete extends Obaveza
 {
-    constructor(ime, prezime, godine, nivoZadovoljstva, prohtevZaParama, cale)
+    constructor(ime, prezime, godine, prohtevZaParama, cale)
     {
-        super(ime, prezime, godine, nivoZadovoljstva, prohtevZaParama);
+        super(ime, prezime, godine, prohtevZaParama);
         this.cale = cale;
+        this.nivoZadovoljstva = 0;//izracunati srecu deteta po nekoj formuli
         this.kontejnerDeteta = null;
     }
 
     nacrtajDete()
     {
+        document.getElementById("natkontejnerDece").querySelector("h3").innerHTML = "Deca:";
         this.kontejnerDeteta = document.createElement('div');
         this.kontejnerDeteta.className = 'list-group';
         this.kontejnerDeteta.innerHTML = super.vratiSadrzajObaveze();
@@ -20,7 +22,8 @@ export class Dete extends Obaveza
         kontejnerSvakogDeteta.appendChild(this.kontejnerDeteta);
 
         this.kontejnerDeteta.querySelector('button[name="btnPodmiti"]').addEventListener('click', () => {
-            console.log(this.cale);
+            console.log("dete 25");
+            console.log(this.cale.tajniStek);
             if((this.cale.tajniStek - 10000) >= 0)
             {
                 this.cale.tajniStek -= 10000;
@@ -33,6 +36,11 @@ export class Dete extends Obaveza
             else
                 this.kontejnerDeteta.querySelector('button[name="btnPodmiti"]').disabled = true;
                 //srediti VHDL stil nezeljenu memoriju
-        });
+        });  
+    }
+    
+    preracunajZadovoljstvo()
+    {
+        console.log("Nedefinisano racunanje srece za dete");
     }
 }

@@ -7,13 +7,14 @@ export class Zena extends Obaveza
         super(ime, prezime, godine, prohtevZaParama);
         this.muz = null;
         this.zeninKontejner = document.getElementsByName('zeninKontejner')[0];
-        this.nivoZadovoljstva = 0;//gaimqesm ti interpretator
+        this.nivoZadovoljstva = 0;
         this.deca = [];
     }
 
     nacrtajZenu()
     {
-        this.zeninKontejner.innerHTML = super.vratiSadrzajObaveze();
+        this.zeninKontejner.querySelector("h3").innerHTML = "Zena:";
+        this.zeninKontejner.innerHTML += super.vratiSadrzajObaveze();
         if(this.nivoZadovoljstva < 5)
         {
             this.zeninKontejner.style.backgroundColor = "red";
@@ -40,21 +41,13 @@ export class Zena extends Obaveza
         }
     }
 
+    preracunajZadovoljstvo()
+    {
+        console.log("Zadovoljstvo fali da se uradi za zenu");
+    }
+
     uzmiPareMuzu()
-    {//kako implementirati to da dete moze da javi majci za caletov tajni stek?
+    {
         this.muz.novacOdPlate -= this.prohtevZaParama/10 * this.muz.nivoZadovoljstva;
     }
-
-
-/*
-    zapocniSvadju()
-    {
-        if(this.nivoZadovoljstva < 5)
-        {
-            let dugmeSvadje = document.createElement('button');
-            dugmeSvadje.innerHTML = nivoZadovoljstva * 7;
-            document.body.appendChild(dugmeSvadje);//ne bi bilo lose da se ubaci atribut koji pamti hosta Zene
-        }    
-    }
-    */
 }

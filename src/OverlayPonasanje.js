@@ -3,7 +3,7 @@ import { Cale } from './Cale.js';
 import { Zena } from './Zena.js';
 import { Dete } from "./Dete.js";
 
-export class OverlayPonasanje
+class OverlayPonasanje
 {
     constructor()
     {
@@ -33,12 +33,13 @@ export class OverlayPonasanje
                 "ime": cale.ime,
                 "prezime": cale.prezime,
                 "godine": cale.godine,
-                "nivoZadovoljstva": cale.nivoZadovoljstva,
+                "novacOdPlate": cale.novacOdPlate,
+                "tajniStek": cale.tajniStek,
                 "zena":{
                     "ime": zena.ime,
                     "prezime": zena.prezime,
                     "godine": zena.godine,
-                    "nivoZadovoljstva": zena.nivoZadovoljstva
+                    "prohtevZaParama": zena.prohtevZaParama
                 },
                 "deca":
                 []
@@ -63,7 +64,7 @@ export class OverlayPonasanje
     {
         let poljeZaBrojDece = this.kontejnerZaCeoOverlay.querySelector("input[name='inpOverlayBrojDece']");
         while(this.kontejnerSveDeceOverlay.firstChild)
-            this.kontejnerSveDeceOverlay.removeChild(this.kontejnerSveDeceOverlay.firstChild);//eksperimentalna stvar, da ne ostanu nevalidna deca
+            this.kontejnerSveDeceOverlay.removeChild(this.kontejnerSveDeceOverlay.firstChild);
         let brojDece = parseInt(poljeZaBrojDece.value);
         for(let i=0; i<brojDece; i++)
         {
@@ -86,17 +87,16 @@ export class OverlayPonasanje
         let imeCaleta = this.caletovDivOverlay.querySelector("input[name='inpCaletovoImeOverlay']").value;
         let prezimeCaleta = this.caletovDivOverlay.querySelector("input[name='inpCaletovoPrezimeOverlay']").value;
         let godineCaleta = this.caletovDivOverlay.querySelector("input[name='inpCaletoveGodineOverlay']").value;
-        let nivoZadovoljstva = this.caletovDivOverlay.querySelector("input[name='inpCaletovoZadovoljstvoOverlay']").value;
+        let novacOdPlate = this.caletovDivOverlay.querySelector("input[name='inpCaletovaPlataOverlay']").value;
         let tajniStek = this.caletovDivOverlay.querySelector("input[name='inpCaletovStekOverlay']").value;
             
-        return new Cale(imeCaleta, prezimeCaleta, godineCaleta, nivoZadovoljstva, 0, tajniStek, null);
+        return new Cale(imeCaleta, prezimeCaleta, godineCaleta, novacOdPlate, tajniStek, null);
     }
 
     ucitajZenuIzKontrola()
     {
         let ime = this.zeninDivOverlay.querySelector("input[name='inpZeninoImeOverlay']").value;
         let prezime = this.zeninDivOverlay.querySelector("input[name='inpZeninoPrezimeOverlay']").value;
-        let nivoZadovoljstva = this.zeninDivOverlay.querySelector("input[name='inpZeninoZadovoljstvoOverlay']").value;
         let godine = this.zeninDivOverlay.querySelector("input[name='inpZenineGodineOverlay']").value;
         let prohtevZaParama = this.zeninDivOverlay.querySelector("input[name='inpZeninProhtevZaParama']").value;
 
@@ -114,3 +114,5 @@ export class OverlayPonasanje
         return new Dete(ime, prezime, godine, nivoZadovoljstva, prohtevZaParama, null);
     }
 }
+
+export const ponasanjeOverlay = new OverlayPonasanje();

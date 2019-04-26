@@ -1,6 +1,6 @@
 export class Cale
 {
-    constructor(ime, prezime, godine, nivoZadovoljstva, novacOdPlate, tajniStek, zena)
+    constructor(ime, prezime, godine, novacOdPlate, tajniStek, zena)
     {
         this.ime = ime;
         this.prezime = prezime;
@@ -8,7 +8,7 @@ export class Cale
         this.nivoZadovoljstva = 0;//ipak ce da se preracunava, koj ce mi inace djavo godine i ostale stvari...
         this.novacOdPlate = novacOdPlate;
         this.tajniStek = tajniStek;
-        this.zena = zena;//prosledjivanje preko konstruktora vs preko funkcije
+        this.zena = zena;
         this.deca = [];
         this.kontejner = document.getElementsByName("caletovKontejner")[0];
     }
@@ -28,8 +28,8 @@ export class Cale
                 <button name='btnSverc' value='15000' class="btn btn-success">Obavi šverc</button>
                 <button name='btnOpljackajBanku' value='30000' class="btn btn-success">Opljačkaj banku</button>
             </div>`;
-        this.kontejner.innerHTML = formaZaCaleta; //ovde postoji i += za dodavanje dugmeta
-        //prva faza: ne majem se sa rxjs, samo kostur napravim, posle baza, pa osnovna simulacija, pa dalje
+        this.kontejner.innerHTML += formaZaCaleta;
+        this.kontejner.querySelector("h3").innerHTML = "Otac:";
         let nizCaletovihOpcija = document.querySelectorAll('button[class="btn btn-success"]');
         for(let i=0; i < nizCaletovihOpcija.length; i++)
             nizCaletovihOpcija[i].onclick = (event) => this.zaradiPareVanPlate(event.target.value); 
@@ -37,9 +37,7 @@ export class Cale
 
     zaradiPareVanPlate(vrednostPlena)
     {
-        console.log(vrednostPlena);
         this.tajniStek += parseInt(vrednostPlena);//value cu da vratim posle...
-        console.log("Caletov stek: " + this.tajniStek);
         this.azurirajStek();
     }
 
@@ -60,8 +58,10 @@ export class Cale
     }
 
     dodajDete(dete)
-    {
+    {//automatski nek se preracunava
         this.deca.push(dete);
+        this.nivoZadovoljstva++;
+        this.azurirajZadovoljstvo();
     }
 
     primiPlatu(plata)

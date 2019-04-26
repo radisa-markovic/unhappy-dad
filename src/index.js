@@ -1,20 +1,18 @@
 import { Cale } from './Cale.js';
 import { Zena } from './Zena.js';
 import { Dete } from './Dete.js';
-import { OverlayPonasanje } from './OverlayPonasanje.js';
+import { ponasanjeOverlay } from './OverlayPonasanje.js';
 import { BazaPodatakaServis } from './BazaPodatakaServis.js';
 
 
 BazaPodatakaServis.vratiSvePorodice(popuniSelektor);
 document.querySelector('button[name="btnPotvrde"]').addEventListener("click", zapocniSimulaciju);
-const ponasanjeOverlayForme = new OverlayPonasanje();
 
 function zapocniSimulaciju()
 {
     let selektor = document.querySelector("select");
-    BazaPodatakaServis.ucitajJednuPorodicu(selektor.options[selektor.selectedIndex].value, kreirajObjekteIzPodatka);
+    BazaPodatakaServis.ucitajJednuPorodicu(selektor.options[selektor.selectedIndex].value, glavnaFunkcijaPrograma);
     selektor.disabled = true;
-    let podaci = BazaPodatakaServis.vratiSvePorodice(popuniSelektor);
 }
 
 function popuniSelektor(podaci)
@@ -29,10 +27,9 @@ function popuniSelektor(podaci)
         selektor.appendChild(opcija);
         i++;
     }
-    return podaci;//za sledeci then, poluskrpljeno
 }
 
-function kreirajObjekteIzPodatka(podatak)
+function glavnaFunkcijaPrograma(podatak)
 {
     let cale =  new Cale(podatak.ime, podatak.prezime, podatak.godine,
         podatak.novacOdPlate, podatak.tajniStek, null);
@@ -44,9 +41,9 @@ function kreirajObjekteIzPodatka(podatak)
     zena.muz = cale;
     
     podatak.deca.forEach(element => {
-        let dete = new Dete(element.ime, element.prezime, element.godine, 0,
+        let dete = new Dete(element.ime, element.prezime, element.godine,
             element.prohtevZaParama, cale);
-        cale.deca.push(dete);
+        cale.dodajDete(dete);
         dete.nacrtajDete();
     });
     

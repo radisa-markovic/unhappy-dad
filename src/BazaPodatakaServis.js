@@ -30,8 +30,21 @@ export class BazaPodatakaServis
                'Content-type': 'application/json'
             },
             body: JSON.stringify(prosledjeniObjekat)
-        }).then(podaci => console.log(podaci))
+        }).then(BazaPodatakaServis.vratiSvePorodice(this.popuniiSelektor))
         .catch(greska => console.log(greska));
     }
 
+    popuniiSelektor(podaci)
+    {
+        let selektor = document.querySelector("select");
+        let i = 0;
+        while(podaci[i])
+        {
+            let opcija = document.createElement("option");
+            opcija.value = i;
+            opcija.innerHTML = podaci[i].prezime;
+            selektor.appendChild(opcija);
+            i++;
+        }
+    }
 }
