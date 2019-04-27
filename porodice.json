@@ -5,6 +5,7 @@
       "ime": "Milosav",
       "prezime": "Marković",
       "godine": 54,
+      "plata": 50000,
       "novacOdPlate": 30000,
       "tajniStek": 100000,
       "zena": {
@@ -39,7 +40,7 @@
       "ime": "Milan",
       "prezime": "Vještica",
       "godine": 22,
-      "nivoZadovoljstva": 50,
+      "plata": 70000,
       "novacOdPlate": 20000,
       "tajniStek": 80000,
       "zena": {
@@ -55,12 +56,13 @@
       "ime": "Vladimir",
       "prezime": "Barjaktarević",
       "godine": 35,
+      "plata": 50000,
       "novacOdPlate": 48000,
       "tajniStek": 0,
       "zena": {
         "ime": "Dragana",
         "prezime": "Barjaktarević",
-        "godine": 29,
+        "godine": 33,
         "prohtevZaParama": 45
       },
       "deca": [
@@ -73,7 +75,7 @@
         {
           "ime": "Ivana",
           "prezime": "Barjaktarević",
-          "godine": 22,
+          "godine": 15,
           "prohtevZaParama": 29
         }
       ]

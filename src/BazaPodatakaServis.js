@@ -26,10 +26,10 @@ export class BazaPodatakaServis
                 selektor.appendChild(opcija);
                 i++;
             }
-       });//da vidim kako radi
+       });
    }
 
-   static ucitajJednuPorodicu(redniBroj, callbackZaObjekte)//mozda ima i neki callback parametar
+   static ucitajJednuPorodicu(redniBroj, callbackZaObjekte)
    {
        fetch(PUTANJA_DO_BAZE_PODATAKA + "/porodice/" + redniBroj)
        .then(odgovor => odgovor.json())

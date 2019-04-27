@@ -37,6 +37,7 @@ class OverlayPonasanje
                 "ime": cale.ime,
                 "prezime": cale.prezime,
                 "godine": cale.godine,
+                "plata": cale.plata,
                 "novacOdPlate": cale.novacOdPlate,
                 "tajniStek": cale.tajniStek,
                 "zena":{
@@ -91,10 +92,11 @@ class OverlayPonasanje
         let imeCaleta = this.caletovDivOverlay.querySelector("input[name='inpCaletovoImeOverlay']").value;
         let prezimeCaleta = this.caletovDivOverlay.querySelector("input[name='inpCaletovoPrezimeOverlay']").value;
         let godineCaleta = this.caletovDivOverlay.querySelector("input[name='inpCaletoveGodineOverlay']").value;
+        let caletovaPlata = this.caletovDivOverlay.querySelector("input[name='inpCaletovaPlataOverlay']").value;
         let novacOdPlate = this.caletovDivOverlay.querySelector("input[name='inpCaletovaPlataOverlay']").value;
         let tajniStek = this.caletovDivOverlay.querySelector("input[name='inpCaletovStekOverlay']").value;
             
-        return new Cale(imeCaleta, prezimeCaleta, godineCaleta, novacOdPlate, tajniStek, null);
+        return new Cale(imeCaleta, prezimeCaleta, godineCaleta, caletovaPlata, novacOdPlate, tajniStek, null);
     }
 
     ucitajZenuIzKontrola()

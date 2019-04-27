@@ -15,39 +15,42 @@ export class Zena extends Obaveza
     {
         this.zeninKontejner.querySelector("h3").innerHTML = "Zena:";
         this.zeninKontejner.innerHTML += super.vratiSadrzajObaveze();
+        this.preracunajPocetnoZadovoljstvo();
         if(this.nivoZadovoljstva < 5)
         {
             this.zeninKontejner.style.backgroundColor = "red";
             let dugmeSvadje = document.createElement('button');
-            dugmeSvadje.innerHTML = 'Svađa';//ovo mozda da dodam da bude stalno na formi, al kao da bude nevidljivo...
+            dugmeSvadje.innerHTML = 'Svađa';
             dugmeSvadje.value = (10 - this.nivoZadovoljstva) * 5;
             this.zeninKontejner.appendChild(dugmeSvadje);
             dugmeSvadje.addEventListener('click', () => {
                 if(parseInt(dugmeSvadje.value) !== 0)
                 {
                     dugmeSvadje.value--;
-                    this.muz.novacOdPlate -= 1000;
+                    this.uzmiMuzuPare();
                     this.muz.azurirajPlatu();
                     console.log(dugmeSvadje.value);
                 }
-                if(parseInt(dugmeSvadje.value) === 0)
-                {    
-                    this.nivoZadovoljstva = 5;
-                    this.zeninKontejner.querySelector("input[name='inpZadovoljstvoObaveze']").value = this.nivoZadovoljstva;
+                else
+                {
                     dugmeSvadje.disabled = true;
                     this.zeninKontejner.style.backgroundColor = "yellow";
                 }
             });
         }
+
     }
 
-    preracunajZadovoljstvo()
+    preracunajPocetnoZadovoljstvo()
     {
-        console.log("Zadovoljstvo fali da se uradi za zenu");
+        let muzevaPlata = this.muz.plata;
+        this.nivoZadovoljstva += (Math.trunc(muzevaPlata / 10000) - Math.trunc(this.godine / 10)) % 10;//sto je nesrecnija, odlaze pare
+        this.zeninKontejner.querySelector("input[name='inpZadovoljstvoObaveze']").value = this.nivoZadovoljstva;
     }
 
-    uzmiPareMuzu()
+    uzmiMuzuPare()
     {
-        this.muz.novacOdPlate -= this.prohtevZaParama/10 * this.muz.nivoZadovoljstva;
+        this.nivoZadovoljstva = (this.nivoZadovoljstva + 1) % 10;
+        this.muz.novacOdPlate -= (10 - this.nivoZadovoljstva) * 200;
     }
 }
