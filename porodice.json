@@ -79,6 +79,37 @@
           "prohtevZaParama": 29
         }
       ]
+    },
+    {
+      "ime": "Milan",
+      "prezime": "Mićko",
+      "godine": 45,
+      "plata": 50000,
+      "novacOdPlate": 50000,
+      "tajniStek": 10000,
+      "zena": {
+        "ime": "Ivana",
+        "prezime": "Mićko",
+        "godine": 40,
+        "prohtevZaParama": 50
+      },
+      "deca": [
+        {
+          "ime": "Mile",
+          "prezime": "Mićko",
+          "godine": 13,
+          "nivoZadovoljstva": 0,
+          "prohtevZaParama": 34
+        },
+        {
+          "ime": "Joca",
+          "prezime": "Mićko",
+          "godine": 19,
+          "nivoZadovoljstva": 0,
+          "prohtevZaParama": 45
+        }
+      ],
+      "id": 3
     }
   ]
 }

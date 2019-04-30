@@ -3,11 +3,12 @@ import { Zena } from './Zena.js';
 import { Dete } from './Dete.js';
 import { ponasanjeOverlay } from './OverlayPonasanje.js';
 import { BazaPodatakaServis } from './BazaPodatakaServis.js';
+import { interval } from 'rxjs';
+import { mapTo, tap, take, takeUntil, filter, map, distinctUntilChanged } from "rxjs/operators";
 
 
 BazaPodatakaServis.vratiSvePorodice();
 document.querySelector('button[name="btnPotvrde"]').addEventListener("click", zapocniSimulaciju);
-
 
 function zapocniSimulaciju()
 {
@@ -27,7 +28,6 @@ function glavnaFunkcijaPrograma(podatak)
     zena.muz = cale;
     zena.nacrtajZenu();
     cale.zena = zena;
-        
     podatak.deca.forEach(element => {
         let dete = new Dete(element.ime, element.prezime, element.godine,
             element.prohtevZaParama, cale);
@@ -35,4 +35,23 @@ function glavnaFunkcijaPrograma(podatak)
         dete.nacrtajDete();
     });
     
+    //pomereno odozdo, jer opet ide ona evaluacija, tj ne vidi ga ovo dole da postoji (hoisting, aaaa)
+    const caletovStek = interval(500)
+        .pipe(map(vrednost => cale.tajniStek),
+              distinctUntilChanged(),
+              filter(vrednost => vrednost >= 200000),
+              take(1));
+
+    const caletovaMesecnaPlata = interval(1000)
+                                  .pipe(mapTo(cale.plata),
+                                  takeUntil(caletovStek));
+
+    const primanjePlate$ = caletovaMesecnaPlata.subscribe(() => {
+        cale.primiPlatu();
+        if(cale.krajnjiCiljUZivotu())
+        {//ne radi lepo
+            primanjePlate$.unsubscribe();
+            alert("Cale je pobedio, srecan je dosta");
+        }//uslov za pobedu ne radi skroz kako treba, takodje srediti "ponasanja" zene i dece
+    });
 }

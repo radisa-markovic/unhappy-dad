@@ -1,3 +1,6 @@
+import { interval } from "rxjs";
+import { distinctUntilChanged, map } from "rxjs/operators";
+
 export class Cale
 {
     constructor(ime, prezime, godine, plata, novacOdPlate, tajniStek, zena)
@@ -12,6 +15,13 @@ export class Cale
         this.zena = zena;
         this.deca = [];
         this.kontejner = document.getElementsByName("caletovKontejner")[0];
+
+        this.emitovanjeSteka$ = interval(1000)
+                                .pipe(map(vrednost => vrednost = this.tajniStek),
+                                      distinctUntilChanged());//i on sad kao stalno emituje pare kad se promene
+        this.emitovanjePlate$ = interval(1000)
+                                .pipe(map(vrednost => vrednost = this.novacOdPlate),
+                                      distinctUntilChanged());//zena ce ovo osluskivati
     }
 
     nacrtajCaleta()
@@ -35,7 +45,6 @@ export class Cale
         let nizCaletovihOpcija = document.querySelectorAll('button[class="btn btn-success"]');
         for(let i=0; i < nizCaletovihOpcija.length; i++)
             nizCaletovihOpcija[i].onclick = (event) => {
-                console.log(event.target.value);
                 this.zaradiPareVanPlate(event.target.value);
                 event.target.disabled = true;
                 let stariTekst = event.target.innerHTML;
@@ -54,7 +63,15 @@ export class Cale
 
     zaradiPareVanPlate(vrednostPlena)
     {
-        this.tajniStek += parseInt(vrednostPlena);//value cu da vratim posle...
+        this.tajniStek = parseInt(this.tajniStek) + parseInt(vrednostPlena);//value cu da vratim posle...
+        this.azurirajStek();
+    }
+
+    primiPlatu()
+    {
+        this.novacOdPlate += 0.8 * this.plata;
+        this.tajniStek += 0.2 * this.plata;
+        this.azurirajPlatu();
         this.azurirajStek();
     }
 
@@ -71,7 +88,6 @@ export class Cale
     azurirajStek()
     {
         document.querySelector('input[name="inpCaletovTajniStek"]').value = this.tajniStek;
-        console.log("Caletov stek: " + this.tajniStek);
     }
 
     dodajDete(dete)
@@ -81,15 +97,9 @@ export class Cale
         this.azurirajZadovoljstvo();
     }
 
-    primiPlatu(plata)
-    {
-        this.novacOdPlate += 0.8 * plata;
-        this.tajniStek += 0.2 * plata;
-    }
-
     krajnjiCiljUZivotu()
     {
-        if(this.tajniStek > 200000 && this.nivoZadovoljstva === 10)
-            print('Uspesan sam mnogo, presao sam igricu');
+        if(this.tajniStek >= 200000 && this.nivoZadovoljstva === 10)
+            alert(`Uspesan sam mnogo, presao sam igricu`);
     }
 }

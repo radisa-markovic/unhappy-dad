@@ -2,6 +2,8 @@ import { BazaPodatakaServis } from "./BazaPodatakaServis.js";
 import { Cale } from './Cale.js';
 import { Zena } from './Zena.js';
 import { Dete } from "./Dete.js";
+import { fromEvent } from "rxjs";
+import { map, debounceTime } from "rxjs/operators"
 
 class OverlayPonasanje
 {
@@ -9,11 +11,22 @@ class OverlayPonasanje
     {
         this.kontejnerZaCeoOverlay = document.getElementById("overlay");
         this.caletovDivOverlay = document.getElementById("caletovDivOverlay");
+        this.caletovoPrezime$ = fromEvent(document.querySelector("input[name='inpCaletovoPrezimeOverlay']"), 'input')
+                                .pipe(map(event => event.target.value),
+                                debounceTime(500));//nek bude da se ovako radi
         this.zeninDivOverlay = document.getElementById("zeninDivOverlay");
+        this.zeninoPrezime$;
         this.kontejnerSveDeceOverlay = document.getElementById("velikiKontejnerDeceOverlay");
         this.dugmeZaPotvrdu = document.getElementById("btnPotvrdaPodataka");
 
         this.dodajDogadjajeElementima();
+        this.pretplatiZeninoPrezime();
+    }
+
+    pretplatiZeninoPrezime()
+    {
+        this.zeninoPrezime$ = this.caletovoPrezime$.subscribe((prezime) => 
+        document.querySelector("input[name='inpZeninoPrezimeOverlay']").value = prezime);
     }
 
     dodajDogadjajeElementima()
@@ -24,27 +37,29 @@ class OverlayPonasanje
 
         this.kontejnerZaCeoOverlay.querySelector("button[name='btnPonisti']").addEventListener("click", () => {
             this.kontejnerZaCeoOverlay.style.height = '0%';
+            this.zeninoPrezime$.unsubscribe();//pokusaj sprecavanje curenja memorije
         });
 
         this.kontejnerZaCeoOverlay.querySelector("input[name='inpOverlayBrojDece']")
-        .addEventListener("change", () => this.ucitajFormeZaUnosDece());//bez () se samo jednom izvrsava
+        .addEventListener("change", () => this.ucitajFormeZaUnosDece());
 
         document.getElementById("btnPotvrdaPodataka").addEventListener("click", () => {
             this.kontejnerZaCeoOverlay.style.height = '0%';
+            this.zeninoPrezime$.unsubscribe();
             let cale = this.ucitajCaletaIzKontrola();
             let zena = this.ucitajZenuIzKontrola();
             let porodicaJSONObliku = {
                 "ime": cale.ime,
                 "prezime": cale.prezime,
-                "godine": cale.godine,
-                "plata": cale.plata,
-                "novacOdPlate": cale.novacOdPlate,
-                "tajniStek": cale.tajniStek,
+                "godine": parseInt(cale.godine),
+                "plata": parseInt(cale.plata),
+                "novacOdPlate": parseInt(cale.novacOdPlate),
+                "tajniStek": parseInt(cale.tajniStek),
                 "zena":{
                     "ime": zena.ime,
                     "prezime": zena.prezime,
-                    "godine": zena.godine,
-                    "prohtevZaParama": zena.prohtevZaParama
+                    "godine": parseInt(zena.godine),
+                    "prohtevZaParama": parseInt(zena.prohtevZaParama)
                 },
                 "deca":
                 []
@@ -55,15 +70,16 @@ class OverlayPonasanje
                 let JSONPrivremenoDete = {
                     "ime": privremenoDete.ime,
                     "prezime": privremenoDete.prezime,
-                    "godine": privremenoDete.godine,
-                    "nivoZadovoljstva": privremenoDete.nivoZadovoljstva,
-                    "prohtevZaParama": privremenoDete.prohtevZaParama
+                    "godine": parseInt(privremenoDete.godine),
+                    "nivoZadovoljstva": parseInt(privremenoDete.nivoZadovoljstva),
+                    "prohtevZaParama": parseInt(privremenoDete.prohtevZaParama)
                 };
                 porodicaJSONObliku.deca.push(JSONPrivremenoDete);
             }
             BazaPodatakaServis.dodajPorodicu(porodicaJSONObliku);
         });
     }
+
 
     ucitajFormeZaUnosDece()
     {
@@ -78,12 +94,16 @@ class OverlayPonasanje
             divJednogDeteta.innerHTML = `
                 <h3>Dete ${i + 1} </h3>
                 <input type="text" name="inpOverlayDeteIme" placeholder="Unesi ime">
-                <input type="text" name="inpOverlayDetePrezime" placeholder="Unesi prezime">
+                <input type="text" name="inpOverlayDetePrezime" readonly>
                 <input type="number" name="inpOverlayDeteGodine" placeholder="Unesi godine">
                 <input type="number" name="inpOverlayDeteNivoZadovoljstva" placeholder="Unesi pocetno zadovoljsvo">
                 <input type="number" name="inpOverlayDeteProhtevZaParama" placeholder="Unesi prohtev za parama">
                 `;
             this.kontejnerSveDeceOverlay.appendChild(divJednogDeteta);
+            let pretplataDeteta = this.caletovoPrezime$.subscribe((prezime) => { 
+                this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDetePrezime']")[i].value = prezime;
+            });
+            this.zeninoPrezime$.add(pretplataDeteta);
         }
     }
 
