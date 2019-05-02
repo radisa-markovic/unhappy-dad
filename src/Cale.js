@@ -1,5 +1,6 @@
 import { interval } from "rxjs";
 import { distinctUntilChanged, map, mapTo } from "rxjs/operators";
+import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from "constants";
 
 export class Cale
 {
@@ -16,13 +17,13 @@ export class Cale
         this.deca = [];
         this.kontejner = document.getElementsByName("caletovKontejner")[0];
 
-        this.emitovanjeSteka$ = interval(500)
+        this.emitovanjeSteka$ = interval(200)
                                 .pipe(map(vrednost => vrednost = this.tajniStek),
                                       distinctUntilChanged());//i on sad kao stalno emituje pare kad se promene
         this.emitovanjePlate$ = interval(500)
                                 .pipe(map(vrednost => vrednost = this.novacOdPlate),
                                       distinctUntilChanged());//zena ce ovo osluskivati
-        this.primanjePlate$ = interval(1000)
+        this.primanjePlate$ = interval(5000)
                               .pipe(mapTo(this.plata));
 
         this.emitovanjeStekaPobedaSubscription = this.emitovanjeSteka$.subscribe((vrednost) => {
@@ -30,15 +31,16 @@ export class Cale
             {
                 alert(`Imam 200 000 u steku`);
                 this.emitovanjeStekaPobedaSubscription.unsubscribe();
+                document.querySelectorAll(`button`).forEach(dugme => {
+                    console.log(dugme);
+                    dugme.disabled = true
+                });
             }
         });
         this.primanjePlateSubscription = this.primanjePlate$.subscribe((plata) => {
             this.primiPlatu(plata);
             if(this.krajnjiCiljUZivotu())
-            {
-                alert(`Uspeo sam u zivotu, zaradio sam ${this.tajniStek} u stek i srecan sam u iznosu ${this.nivoZadovoljstva}`);
                 this.primanjePlateSubscription.unsubscribe();
-            }
         });
 
         this.primanjePlateSubscription.add(this.emitovanjeStekaPobedaSubscription);
@@ -73,10 +75,11 @@ export class Cale
                 let tajmer = setInterval(() => event.target.innerHTML = vrednostTajmera--, 1000);
 
                 setTimeout(() => { 
-                    event.target.disabled = false;
+                    if(!this.krajnjiCiljUZivotu())
+                        event.target.disabled = false;
                     event.target.innerHTML = stariTekst;
                     clearInterval(tajmer);    
-                }, parseInt(event.target.value) + 2000);
+                }, parseInt(event.target.value) + 2000);    
             } 
     }
 
@@ -87,8 +90,7 @@ export class Cale
 
     primiPlatu(iznosPlate)
     {
-        this.novacOdPlate += 0.8 * iznosPlate;
-        this.azurirajPlatu();
+        this.azurirajNovacOdPlate(0.8 * iznosPlate);
         this.azurirajStek(0.2 * iznosPlate);
     }
 
@@ -98,8 +100,9 @@ export class Cale
         document.querySelector('input[name="inpCaletovNivoZadovoljstva"]').value = this.nivoZadovoljstva;
     }
 
-    azurirajPlatu()
+    azurirajNovacOdPlate(iznos)
     {
+        this.novacOdPlate += iznos;
         this.kontejner.querySelector('input[name="inpCaletovNovacOdPlate"]').value = this.novacOdPlate;
     }
     

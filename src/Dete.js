@@ -8,20 +8,20 @@ export class Dete extends Obaveza
     {
         super(ime, prezime, godine, prohtevZaParama, null);
         this.cale = cale;
-        this.nivoZadovoljstva = 5;//nek bude neutralno
+        this.nivoZadovoljstva = 5;
 
-        this.pracenjeCaletovogStekaSubscription = interval(400).
-                                       pipe(switchMap(() => this.cale.emitovanjeSteka$))
-                                       .subscribe(() => console.log("Nije uradjeno subscribe za pracenje"));
-                                        //neki if da uradim, npr uzmi pare van redosleda, al samo jednom, bem ga
-                                        //ili da uradim "curenje"
         this.promenaZadovoljstva$ = interval((100 - this.godine) * 100)
                                     .pipe(map(vrednost => this.nivoZadovoljstva - 1),
-                                          distinctUntilChanged()
-                                          )
+                                          distinctUntilChanged());
         this.promenaZadovoljstvaSubscription = this.promenaZadovoljstva$.subscribe((vrednost) => {
                                         this.nivoZadovoljstva = vrednost;
                                     });
+                                    
+        this.pracenjeCaletovogStekaSubscription = this.promenaZadovoljstva$
+                                                  .subscribe((vrednost) => {//treba mi mehanizam da cale prebaci pare u stek, ako nema
+                                                      if(this.nivoZadovoljstva <= 4)
+                                                        this.cale.azurirajStek(-1 * this.prohtevZaParama * 1000);
+                                                  });
         
         this.pracenjeCaletovogStekaSubscription.add(this.promenaZadovoljstvaSubscription);
         this.promenaZadovoljstvaSubscription.add(this.farbanjeKontejneraSubscription);
@@ -45,23 +45,24 @@ export class Dete extends Obaveza
     uzmiPareOdCaleta(kliknutoDugme)
     {
         if((this.cale.tajniStek - this.prohtevZaParama * 1000) >= 0)
-        {//jedan switchMap mislim da resava posao
+        {
             kliknutoDugme.disabled = true;
-            this.cale.azurirajStek(-1 * this.prohtevZaParama * 1000);//bolje je neko dete uciniti srecnijim zbog posledica
+            this.cale.azurirajStek(-1 * this.prohtevZaParama * 1000);
             this.cale.azurirajZadovoljstvo(1);
-            this.nivoZadovoljstva += 3;
-            this.kontejner.querySelector("input[name='inpZadovoljstvoObaveze']").value = this.nivoZadovoljstva;
 
+            super.azurirajZadovoljstvo(3);
             let odbrojavanje = parseInt(kliknutoDugme.value) / 1000;
             let tajmerNeaktivnosti = setInterval(() => kliknutoDugme.innerHTML = odbrojavanje--, 1000);
 
             setTimeout(() => {
-                kliknutoDugme.disabled = false;
+                if(!this.cale.krajnjiCiljUZivotu())
+                    kliknutoDugme.disabled = false;
                 kliknutoDugme.innerHTML = `Podmiti`;
                 clearInterval(tajmerNeaktivnosti);
             }, parseInt(kliknutoDugme.value) + 2000);
+            
         }
         else
-            alert(`Ćale nema dovoljno novca, potrebno je ${this.prohtevZaParama * 1000} da se dete podmiti`)
+            alert(`Ćale nema dovoljno novca, potrebno je  jos ${this.prohtevZaParama * 1000 - this.cale.tajniStek} da se dete podmiti`)
     }
 }

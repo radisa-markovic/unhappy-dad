@@ -36,11 +36,12 @@ export class Obaveza
                 this.kontejner.style.backgroundColor = "yellow";
             else
                 this.kontejner.style.backgroundColor = "green";
-        this.azurirajZadovoljstvo();
+        this.azurirajZadovoljstvo(0);
     }
 
-    azurirajZadovoljstvo()
+    azurirajZadovoljstvo(vrednost)
     {
+        this.nivoZadovoljstva += parseInt(vrednost);
         this.kontejner.querySelector(`input[name="inpZadovoljstvoObaveze"]`).value = this.nivoZadovoljstva;
     }
 }

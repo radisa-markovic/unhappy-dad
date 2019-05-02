@@ -4,20 +4,26 @@ import { map, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 export class Zena extends Obaveza
 {
-    constructor(ime, prezime, godine, prohtevZaParama)
+    constructor(ime, prezime, godine, prohtevZaParama, muz)
     {
         super(ime, prezime, godine, prohtevZaParama, document.getElementsByName('zeninKontejner')[0]);
-        this.muz = null;
+        this.muz = muz;
 
         this.kreirajPotrebuZaSvadjom$ = interval(1000)
                                         .pipe(switchMap( () => this.emitovanjeZadovoljstva$),
                                         distinctUntilChanged())
                                         .subscribe(() => this.zapocniSvadju());
-        //moram staro dugme da uklonim i novo da postavim
+
         this.promenaRaspolozenja$ = interval((100 - this.godine) * 50)
                                     .pipe(map(vrednost => Math.floor(Math.random() * 10)),
                                           distinctUntilChanged()
                                     );
+
+        this.pracenjeMuzevePlateSubscription = this.muz.emitovanjePlate$
+                                               .subscribe(() => {
+                                                   this.uzmiMuzuPare();
+                                               })
+
         this.promenaRaspolozenjaSubscription = this.promenaRaspolozenja$.subscribe(vrednost => this.nivoZadovoljstva = vrednost);
         this.promenaRaspolozenjaSubscription.add(this.farbanjeKontejneraSubscription);//to je ondaj add subscription
     }
@@ -64,7 +70,6 @@ export class Zena extends Obaveza
         {
             nivoLjutnje--;
             this.uzmiMuzuPare();
-            this.muz.azurirajPlatu();
             return nivoLjutnje;
         }
         else
@@ -80,8 +85,8 @@ export class Zena extends Obaveza
 
     uzmiMuzuPare()
     {
-        this.muz.novacOdPlate -= (10 - this.nivoZadovoljstva) * 200;
-        this.kontejner.querySelector("input[name='inpZadovoljstvoObaveze']").value = this.nivoZadovoljstva;
+        this.muz.azurirajNovacOdPlate(-1 * (10 - this.nivoZadovoljstva) * 1000);
+        super.azurirajZadovoljstvo(1);//nek bude ova vrednost
     }
 
 }
