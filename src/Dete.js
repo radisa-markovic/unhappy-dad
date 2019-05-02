@@ -1,4 +1,6 @@
 import { Obaveza } from './Obaveza.js';
+import { interval } from 'rxjs';
+import { switchMap, map, distinctUntilChanged, filter, tap } from 'rxjs/operators';
 
 export class Dete extends Obaveza
 {
@@ -6,10 +8,23 @@ export class Dete extends Obaveza
     {
         super(ime, prezime, godine, prohtevZaParama, null);
         this.cale = cale;
-        this.kontejner = null;
+        this.nivoZadovoljstva = 5;//nek bude neutralno
 
-        this.farbanjeDetetovogKontejneraZadovoljstvom = this.emitovanjeZadovoljstva$
-                                                        .subscribe((vrednost) => super.promeniBoju(vrednost));
+        this.pracenjeCaletovogStekaSubscription = interval(400).
+                                       pipe(switchMap(() => this.cale.emitovanjeSteka$))
+                                       .subscribe(() => console.log("Nije uradjeno subscribe za pracenje"));
+                                        //neki if da uradim, npr uzmi pare van redosleda, al samo jednom, bem ga
+                                        //ili da uradim "curenje"
+        this.promenaZadovoljstva$ = interval((100 - this.godine) * 100)
+                                    .pipe(map(vrednost => this.nivoZadovoljstva - 1),
+                                          distinctUntilChanged()
+                                          )
+        this.promenaZadovoljstvaSubscription = this.promenaZadovoljstva$.subscribe((vrednost) => {
+                                        this.nivoZadovoljstva = vrednost;
+                                    });
+        
+        this.pracenjeCaletovogStekaSubscription.add(this.promenaZadovoljstvaSubscription);
+        this.promenaZadovoljstvaSubscription.add(this.farbanjeKontejneraSubscription);
     }
 
     nacrtajDete()
@@ -18,29 +33,35 @@ export class Dete extends Obaveza
         this.kontejner = document.createElement('div');
         this.kontejner.className = 'list-group';
         this.kontejner.innerHTML = super.vratiSadrzajObaveze();
-        this.kontejner.innerHTML += '<button name="btnPodmiti">Podmiti</button>';
+        this.kontejner.innerHTML += `<button name="btnPodmiti" value="5000">Podmiti</button>`;
 
         let kontejnerSvakogDeteta = document.getElementById('kontejnerDece');
         kontejnerSvakogDeteta.appendChild(this.kontejner);
 
-        this.kontejner.querySelector('button[name="btnPodmiti"]').addEventListener('click', () => {
-            if((this.cale.tajniStek - 10000) >= 0)
-            {
-                this.cale.tajniStek -= 10000;
-                this.cale.azurirajStek();
-                this.cale.nivoZadovoljstva++;
-                this.cale.azurirajZadovoljstvo();
-                this.nivoZadovoljstva += 3;
-                this.kontejner.querySelector("input[name='inpZadovoljstvoObaveze']").value = this.nivoZadovoljstva;
-            }
-            else
-                this.kontejner.querySelector('button[name="btnPodmiti"]').disabled = true;
-                //srediti VHDL stil nezeljenu memoriju
-        });  
+        this.kontejner.querySelector('button[name="btnPodmiti"]').addEventListener("click", () =>
+                                                            this.uzmiPareOdCaleta(event.target));
     }
-    
-    preracunajZadovoljstvo()
+
+    uzmiPareOdCaleta(kliknutoDugme)
     {
-        console.log("Nedefinisano racunanje srece za dete");
+        if((this.cale.tajniStek - this.prohtevZaParama * 1000) >= 0)
+        {//jedan switchMap mislim da resava posao
+            kliknutoDugme.disabled = true;
+            this.cale.azurirajStek(-1 * this.prohtevZaParama * 1000);//bolje je neko dete uciniti srecnijim zbog posledica
+            this.cale.azurirajZadovoljstvo(1);
+            this.nivoZadovoljstva += 3;
+            this.kontejner.querySelector("input[name='inpZadovoljstvoObaveze']").value = this.nivoZadovoljstva;
+
+            let odbrojavanje = parseInt(kliknutoDugme.value) / 1000;
+            let tajmerNeaktivnosti = setInterval(() => kliknutoDugme.innerHTML = odbrojavanje--, 1000);
+
+            setTimeout(() => {
+                kliknutoDugme.disabled = false;
+                kliknutoDugme.innerHTML = `Podmiti`;
+                clearInterval(tajmerNeaktivnosti);
+            }, parseInt(kliknutoDugme.value) + 2000);
+        }
+        else
+            alert(`Ćale nema dovoljno novca, potrebno je ${this.prohtevZaParama * 1000} da se dete podmiti`)
     }
 }

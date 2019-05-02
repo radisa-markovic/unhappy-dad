@@ -13,12 +13,14 @@ export class Obaveza
         this.kontejner = kontejner;//logicnije je da bude ovde
         this.emitovanjeZadovoljstva$ = interval(100)
                                        .pipe(map(vrednost => this.nivoZadovoljstva),
-                                             distinctUntilChanged());
+                                             distinctUntilChanged());                        
+        this.farbanjeKontejneraSubscription = this.emitovanjeZadovoljstva$.subscribe((vrednost) => this.promeniBoju(vrednost));
     }
 
     vratiSadrzajObaveze()
     {
-        return `Ime: <input type='text' name='inpImeObaveze' readonly value='${this.ime}'>
+        return `<h3></h3>
+        Ime: <input type='text' name='inpImeObaveze' readonly value='${this.ime}'>
         Prezime: <input type='text' name='inpPrezimeObaveze' readonly value='${this.prezime}'>
         Godine: <input type='number' name='inpBrojGodina' readonly value='${this.godine}'>
         Nivo zadovoljstva: <input type='number' name='inpZadovoljstvoObaveze' readonly value='${this.nivoZadovoljstva}'>
@@ -27,12 +29,18 @@ export class Obaveza
 
     promeniBoju(vrednost)
     {
-        if(vrednost < 5)
+        if(vrednost < 4)
             this.kontejner.style.backgroundColor = "red";
         else
-            if(vrednost < 8)
+            if(vrednost < 7)
                 this.kontejner.style.backgroundColor = "yellow";
             else
                 this.kontejner.style.backgroundColor = "green";
+        this.azurirajZadovoljstvo();
+    }
+
+    azurirajZadovoljstvo()
+    {
+        this.kontejner.querySelector(`input[name="inpZadovoljstvoObaveze"]`).value = this.nivoZadovoljstva;
     }
 }

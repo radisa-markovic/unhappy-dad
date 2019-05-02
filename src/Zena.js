@@ -1,6 +1,6 @@
 import { Obaveza } from './Obaveza.js';
 import { interval } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
+import { map, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 export class Zena extends Obaveza
 {
@@ -9,39 +9,66 @@ export class Zena extends Obaveza
         super(ime, prezime, godine, prohtevZaParama, document.getElementsByName('zeninKontejner')[0]);
         this.muz = null;
 
-        this.farbanjeKontejneraZadovoljstvom = this.emitovanjeZadovoljstva$.subscribe((vrednost) => super.promeniBoju(vrednost));
-        //koliko god da je logicno da gore ide "super" kao atribut natklase, ide "this", ALI za metode to ne vazi
-        //this.preracunajPocetnoZadovoljstvo();//muz je null, izregulisati situaciju kad se "dobija" muz
+        this.kreirajPotrebuZaSvadjom$ = interval(1000)
+                                        .pipe(switchMap( () => this.emitovanjeZadovoljstva$),
+                                        distinctUntilChanged())
+                                        .subscribe(() => this.zapocniSvadju());
+        //moram staro dugme da uklonim i novo da postavim
+        this.promenaRaspolozenja$ = interval((100 - this.godine) * 50)
+                                    .pipe(map(vrednost => Math.floor(Math.random() * 10)),
+                                          distinctUntilChanged()
+                                    );
+        this.promenaRaspolozenjaSubscription = this.promenaRaspolozenja$.subscribe(vrednost => this.nivoZadovoljstva = vrednost);
+        this.promenaRaspolozenjaSubscription.add(this.farbanjeKontejneraSubscription);//to je ondaj add subscription
     }
 
+    //ovde isto moze da ide jedan "super" u klasi Obaveza, pa da se dodaju neke pojedinosti
     nacrtajZenu()
     {
         this.kontejner.querySelector("h3").innerHTML = "Žena:";
         this.kontejner.innerHTML += super.vratiSadrzajObaveze();
         this.preracunajPocetnoZadovoljstvo();
-        if(this.nivoZadovoljstva < 5)
+    }
+
+    zapocniSvadju()
+    {//ovde cu da "unsubscribe-ujem" kad se javi svadja, pa nakon svadje opet subscribe
+        if(this.kontejner.querySelector("button"))
+            this.kontejner.removeChild(this.kontejner.querySelector("button"));
+
+        if(this.nivoZadovoljstva < 4)
         {
-            this.kontejner.style.backgroundColor = "red";
-            let dugmeSvadje = document.createElement('button');
-            dugmeSvadje.value = (10 - this.nivoZadovoljstva) * 5;
-            dugmeSvadje.innerHTML = `Svađa ` + `(${dugmeSvadje.value})`;
+            let dugmeSvadje = document.createElement("button");
+            dugmeSvadje.value = parseInt((10 - this.nivoZadovoljstva) * 5);
+            dugmeSvadje.innerHTML = `Svađa (${dugmeSvadje.value})`;
             this.kontejner.appendChild(dugmeSvadje);
-            dugmeSvadje.addEventListener('click', () => {
-                if(parseInt(dugmeSvadje.value) !== 0)
+            dugmeSvadje.addEventListener("click", () => {
+                if(dugmeSvadje.value == 0)
                 {
-                    dugmeSvadje.value--;
-                    this.uzmiMuzuPare();
-                    this.muz.azurirajPlatu();
-                    dugmeSvadje.innerHTML = `Svađa ` + `(${dugmeSvadje.value})`;
+                    dugmeSvadje.disabled = true;
+                    this.nivoZadovoljstva = 5;
+                    this.kontejner.querySelector(`input[name='inpZadovoljstvoObaveze']`).value = this.nivoZadovoljstva;
+                    this.muz.azurirajZadovoljstvo(3);//za sada staticki, treba mi formula i za to mozda
                 }
                 else
                 {
-                    dugmeSvadje.disabled = true;
-                    this.kontejner.style.backgroundColor = "yellow";
+                    dugmeSvadje.value = this.funkcijaSvadje(dugmeSvadje.value);
+                    dugmeSvadje.innerHTML = `Svađa (${dugmeSvadje.value})`;
                 }
             });
         }
+    }
 
+    funkcijaSvadje(nivoLjutnje)
+    {
+        if(nivoLjutnje !== 0)
+        {
+            nivoLjutnje--;
+            this.uzmiMuzuPare();
+            this.muz.azurirajPlatu();
+            return nivoLjutnje;
+        }
+        else
+            return 0;
     }
 
     preracunajPocetnoZadovoljstvo()
@@ -53,7 +80,6 @@ export class Zena extends Obaveza
 
     uzmiMuzuPare()
     {
-        this.nivoZadovoljstva = (this.nivoZadovoljstva + 1) % 10;
         this.muz.novacOdPlate -= (10 - this.nivoZadovoljstva) * 200;
         this.kontejner.querySelector("input[name='inpZadovoljstvoObaveze']").value = this.nivoZadovoljstva;
     }

@@ -36,7 +36,7 @@ function glavnaFunkcijaPrograma(podatak)
     });
     
     //pomereno odozdo, jer opet ide ona evaluacija, tj ne vidi ga ovo dole da postoji (hoisting, aaaa)
-    const caletovStek = interval(500)
+   /* const caletovStek = interval(500)
         .pipe(map(vrednost => cale.tajniStek),
               distinctUntilChanged(),
               filter(vrednost => vrednost >= 200000),
@@ -53,5 +53,5 @@ function glavnaFunkcijaPrograma(podatak)
             primanjePlate$.unsubscribe();
             alert("Cale je pobedio, srecan je dosta");
         }//uslov za pobedu ne radi skroz kako treba, takodje srediti "ponasanja" zene i dece
-    });
+    });*/
 }
