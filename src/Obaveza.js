@@ -41,7 +41,7 @@ export class Obaveza
 
     azurirajZadovoljstvo(vrednost)
     {
-        this.nivoZadovoljstva += parseInt(vrednost);
+        this.nivoZadovoljstva = (this.nivoZadovoljstva + parseInt(vrednost));
         this.kontejner.querySelector(`input[name="inpZadovoljstvoObaveze"]`).value = this.nivoZadovoljstva;
     }
 }

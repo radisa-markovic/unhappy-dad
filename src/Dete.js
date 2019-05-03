@@ -1,6 +1,6 @@
 import { Obaveza } from './Obaveza.js';
 import { interval } from 'rxjs';
-import { switchMap, map, distinctUntilChanged, filter, tap } from 'rxjs/operators';
+import { map, distinctUntilChanged } from 'rxjs/operators';
 
 export class Dete extends Obaveza
 {
@@ -18,9 +18,12 @@ export class Dete extends Obaveza
                                     });
                                     
         this.pracenjeCaletovogStekaSubscription = this.promenaZadovoljstva$
-                                                  .subscribe((vrednost) => {//treba mi mehanizam da cale prebaci pare u stek, ako nema
-                                                      if(this.nivoZadovoljstva <= 4)
+                                                  .subscribe(() => {
+                                                      if(this.nivoZadovoljstva <= 4 && this.cale.tajniStek - this.prohtevZaParama * 1000 >= 0)
+                                                      {
                                                         this.cale.azurirajStek(-1 * this.prohtevZaParama * 1000);
+                                                        //super.azurirajZadovoljstvo(1);
+                                                      }
                                                   });
         
         this.pracenjeCaletovogStekaSubscription.add(this.promenaZadovoljstvaSubscription);
@@ -33,7 +36,7 @@ export class Dete extends Obaveza
         this.kontejner = document.createElement('div');
         this.kontejner.className = 'list-group';
         this.kontejner.innerHTML = super.vratiSadrzajObaveze();
-        this.kontejner.innerHTML += `<button name="btnPodmiti" value="5000">Podmiti</button>`;
+        this.kontejner.innerHTML += `<button name="btnPodmiti" value="5000" title="Daj ${this.prohtevZaParama * 1000} da bi povećao detetu zadovoljstvo za 3">Podmiti</button>`;
 
         let kontejnerSvakogDeteta = document.getElementById('kontejnerDece');
         kontejnerSvakogDeteta.appendChild(this.kontejner);

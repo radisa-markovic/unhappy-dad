@@ -28,19 +28,12 @@ export class Cale
 
         this.emitovanjeStekaPobedaSubscription = this.emitovanjeSteka$.subscribe((vrednost) => {
             if(this.krajnjiCiljUZivotu())
-            {
-                alert(`Imam 200 000 u steku`);
-                this.emitovanjeStekaPobedaSubscription.unsubscribe();
-                document.querySelectorAll(`button`).forEach(dugme => {
-                    console.log(dugme);
-                    dugme.disabled = true
-                });
-            }
+               this.zavrsiIgru();
         });
         this.primanjePlateSubscription = this.primanjePlate$.subscribe((plata) => {
             this.primiPlatu(plata);
             if(this.krajnjiCiljUZivotu())
-                this.primanjePlateSubscription.unsubscribe();
+                this.zavrsiIgru();
         });
 
         this.primanjePlateSubscription.add(this.emitovanjeStekaPobedaSubscription);
@@ -57,10 +50,10 @@ export class Cale
             Ukupan novac od plate: <input type='number' name='inpCaletovNovacOdPlate' readonly value='${this.novacOdPlate}'>
             Tajni štek: <input type='number' name='inpCaletovTajniStek' readonly value='${this.tajniStek}'>
             <div class="btn-group-vertical">
-                <button name='btnOpljackajKomsiju' value='5000' class="btn btn-success">Opljačkaj komšiju</button>
-                <button name='btnOpljackajProdavnicu' value='10000' class="btn btn-success">Opljačkaj prodavnicu</button>
-                <button name='btnSverc' value='15000' class="btn btn-success">Obavi šverc</button>
-                <button name='btnOpljackajBanku' value='30000' class="btn btn-success">Opljačkaj banku</button>
+                <button name='btnOpljackajKomsiju' value='5000' class="btn btn-success" title="Dodaj 5000 u štek">Opljačkaj komšiju</button>
+                <button name='btnOpljackajProdavnicu' value='10000' class="btn btn-success" title="Dodaj 10 000 u štek">Opljačkaj prodavnicu</button>
+                <button name='btnSverc' value='15000' class="btn btn-success" title="dodaj 15 000 u štek">Obavi šverc</button>
+                <button name='btnOpljackajBanku' value='30000' class="btn btn-success" title="Dodaj 30 000 u štek">Opljačkaj banku</button>
             </div>`;
         this.kontejner.innerHTML += formaZaCaleta;
         this.kontejner.querySelector("h3").innerHTML = "Otac:";
@@ -90,8 +83,8 @@ export class Cale
 
     primiPlatu(iznosPlate)
     {
-        this.azurirajNovacOdPlate(0.8 * iznosPlate);
-        this.azurirajStek(0.2 * iznosPlate);
+        this.azurirajNovacOdPlate(0.7 * iznosPlate);
+        this.azurirajStek(0.3 * iznosPlate);
     }
 
     azurirajZadovoljstvo(vrednost)
@@ -121,6 +114,16 @@ export class Cale
 
     krajnjiCiljUZivotu()
     {
-        return (this.tajniStek >= 200000 && this.nivoZadovoljstva === 10)
+        return (this.tajniStek >= 200000 && this.nivoZadovoljstva >= 10)
+    }
+
+    zavrsiIgru()
+    {
+        alert(`Pobedio sam, imam ${this.tajniStek} i srecan sam u iznosu od ${this.nivoZadovoljstva}`);
+        document.querySelectorAll(`button`).forEach(dugme => {
+            console.log(dugme);
+            dugme.disabled = true
+        });
+        this.primanjePlateSubscription.unsubscribe();
     }
 }
