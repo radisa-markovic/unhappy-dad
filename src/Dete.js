@@ -19,35 +19,27 @@ export class Dete extends Obaveza
         );
         this.promenaZadovoljstvaSubscription = this.promenaZadovoljstva$.subscribe((vrednost) => {
                                         this.nivoZadovoljstva = vrednost;
-                                    });
-        //nije skroz korektno, imam ono prekidanje i osposobljavanje dugmeta kad ne bi trebalo
-        //tj ubaci se ovaj observable ovde gde kao ne bi trebao da se ubaci...
-        //...nista, da smislim ovaj switchMap gde ide i gde ide scan
-        //ovo cu da regulisem kad sutra budem odmorniji
+        });
+     
+        //ovo je mehanizam da dete samo uzme pare iz steka kad je nezadovoljno...
+        //...zato je subscribe na promenu zadovoljstva
+        this.pracenjeCaletovogSteka = this.promenaZadovoljstva$.subscribe(() => {
+            let dugmePodmiti = this.kontejner.querySelector('button[name="btnPodmiti"]');
+            if(this.nivoZadovoljstva <= 4)
+            {
+                //stare supskripcije ostaju, te tzv zombi supskripcije menjaju tekst dugmeta
+                //dal da uradim switchMap nekako, tj dal on resava moj problem?
+                if(this.cale.tajniStek - this.prohtevZaParama * 1000 >= 0)
+                {
+                    this.cale.azurirajStek(-1 * this.prohtevZaParama * 1000);
+                    dugmePodmiti.innerHTML = `Dete je nezadovoljno, podmiti ili odlazi ${this.prohtevZaParama * 1000}`;
+                }            
+            }
+            else
+                dugmePodmiti.innerHTML = `Podmiti (košta: ${this.prohtevZaParama * 1000})`;
+        });
         
-        
-        //switchMap se koristi kad se opali jedan dogadjaj, ja uzmem drugi pa njegove vrednosti tumacim
-        //sad je samo do sinhronizacije, ne stize informacija o steku kako treba, tj sporo ide i to vecno prvi
-        //ovde mozda i neki merege dolazi u opticaj, trebam da nateram da tajmer saceka...
-        //...ovo da se zavrsi, tj nema unakrsnog disable-a i tih stvari
-        //...vtals fhou vaikavt wmxos vta zamxpyxnm? gaimqem tn maives....
-        this.pracenjeCaletovogStekaSubscription = this.promenaZadovoljstva$
-                                                  .subscribe(() => {
-                                                      let dugmePodmiti = this.kontejner.querySelector('button[name="btnPodmiti"]');
-                                                      if(/*this.nivoZadovoljstva <= 4 &&*/ this.cale.tajniStek - this.prohtevZaParama * 1000 >= 0)
-                                                      {
-                                                        this.cale.azurirajStek(-1 * this.prohtevZaParama * 1000);
-                                                        dugmePodmiti.disabled = false;
-                                                          dugmePodmiti.innerHTML = `Podmiti (košta: ${this.prohtevZaParama * 10000} )`;
-                                                      }
-                                                      else
-                                                      {
-                                                          dugmePodmiti.disabled = true; 
-                                                          dugmePodmiti.innerHTML = `Nema cale para, cale ima ${this.cale.tajniStek}, a treba ${this.prohtevZaParama * 1000}`;
-                                                      }
-                                                  });
-        
-        this.pracenjeCaletovogStekaSubscription.add(this.promenaZadovoljstvaSubscription);
+        this.pracenjeCaletovogSteka.add(this.promenaZadovoljstvaSubscription);
         this.promenaZadovoljstvaSubscription.add(this.farbanjeKontejneraSubscription);
     }
 
@@ -57,7 +49,9 @@ export class Dete extends Obaveza
         this.kontejner = document.createElement('div');
         this.kontejner.className = 'list-group';
         this.kontejner.innerHTML = super.vratiSadrzajObaveze();
-        this.kontejner.innerHTML += `<button name="btnPodmiti" value="5000" title="Daj ${this.prohtevZaParama * 1000} da bi povećao detetu zadovoljstvo za 3">Podmiti</button>`;
+        this.kontejner.innerHTML += `<button name="btnPodmiti" value="5000" 
+                                      title="Daj ${this.prohtevZaParama * 1000} da bi povećao detetu zadovoljstvo za 3"
+                                      >Podmiti (košta: ${this.prohtevZaParama * 1000})</button>`;
 
         let kontejnerSvakogDeteta = document.getElementById('kontejnerDece');
         kontejnerSvakogDeteta.appendChild(this.kontejner);
