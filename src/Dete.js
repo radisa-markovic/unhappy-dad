@@ -1,6 +1,8 @@
 import { Obaveza } from './Obaveza.js';
 import { interval } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
+import { map, distinctUntilChanged, sample } from 'rxjs/operators';
+import * as bajaFunkcije from './MojeUtilityFunkcije';
+
 
 export class Dete extends Obaveza
 {
@@ -10,19 +12,38 @@ export class Dete extends Obaveza
         this.cale = cale;
         this.nivoZadovoljstva = 5;
 
-        this.promenaZadovoljstva$ = interval((100 - this.godine) * 100)
-                                    .pipe(map(vrednost => this.nivoZadovoljstva - 1),
-                                          distinctUntilChanged());
+        this.promenaZadovoljstva$ = interval((100 - this.godine) * 100).pipe(
+            sample(interval((100 - this.godine) * 50)), //nek sempluje upola manje od generisanja 
+            map(vrednost => this.nivoZadovoljstva - 1),
+            distinctUntilChanged()
+        );
         this.promenaZadovoljstvaSubscription = this.promenaZadovoljstva$.subscribe((vrednost) => {
                                         this.nivoZadovoljstva = vrednost;
                                     });
-                                    
+        //nije skroz korektno, imam ono prekidanje i osposobljavanje dugmeta kad ne bi trebalo
+        //tj ubaci se ovaj observable ovde gde kao ne bi trebao da se ubaci...
+        //...nista, da smislim ovaj switchMap gde ide i gde ide scan
+        //ovo cu da regulisem kad sutra budem odmorniji
+        
+        
+        //switchMap se koristi kad se opali jedan dogadjaj, ja uzmem drugi pa njegove vrednosti tumacim
+        //sad je samo do sinhronizacije, ne stize informacija o steku kako treba, tj sporo ide i to vecno prvi
+        //ovde mozda i neki merege dolazi u opticaj, trebam da nateram da tajmer saceka...
+        //...ovo da se zavrsi, tj nema unakrsnog disable-a i tih stvari
+        //...vtals fhou vaikavt wmxos vta zamxpyxnm? gaimqem tn maives....
         this.pracenjeCaletovogStekaSubscription = this.promenaZadovoljstva$
                                                   .subscribe(() => {
-                                                      if(this.nivoZadovoljstva <= 4 && this.cale.tajniStek - this.prohtevZaParama * 1000 >= 0)
+                                                      let dugmePodmiti = this.kontejner.querySelector('button[name="btnPodmiti"]');
+                                                      if(/*this.nivoZadovoljstva <= 4 &&*/ this.cale.tajniStek - this.prohtevZaParama * 1000 >= 0)
                                                       {
                                                         this.cale.azurirajStek(-1 * this.prohtevZaParama * 1000);
-                                                        //super.azurirajZadovoljstvo(1);
+                                                        dugmePodmiti.disabled = false;
+                                                          dugmePodmiti.innerHTML = `Podmiti (košta: ${this.prohtevZaParama * 10000} )`;
+                                                      }
+                                                      else
+                                                      {
+                                                          dugmePodmiti.disabled = true; 
+                                                          dugmePodmiti.innerHTML = `Nema cale para, cale ima ${this.cale.tajniStek}, a treba ${this.prohtevZaParama * 1000}`;
                                                       }
                                                   });
         
@@ -42,30 +63,19 @@ export class Dete extends Obaveza
         kontejnerSvakogDeteta.appendChild(this.kontejner);
 
         this.kontejner.querySelector('button[name="btnPodmiti"]').addEventListener("click", () =>
-                                                            this.uzmiPareOdCaleta(event.target));
+                                                            this.uzmiPareOdCaleta(event));
     }
 
-    uzmiPareOdCaleta(kliknutoDugme)
+    uzmiPareOdCaleta(event)
     {
+        let kliknutoDugme = event.target;
         if((this.cale.tajniStek - this.prohtevZaParama * 1000) >= 0)
         {
-            kliknutoDugme.disabled = true;
             this.cale.azurirajStek(-1 * this.prohtevZaParama * 1000);
             this.cale.azurirajZadovoljstvo(1);
 
             super.azurirajZadovoljstvo(3);
-            let odbrojavanje = parseInt(kliknutoDugme.value) / 1000;
-            let tajmerNeaktivnosti = setInterval(() => kliknutoDugme.innerHTML = odbrojavanje--, 1000);
-
-            setTimeout(() => {
-                if(!this.cale.krajnjiCiljUZivotu())
-                    kliknutoDugme.disabled = false;
-                kliknutoDugme.innerHTML = `Podmiti`;
-                clearInterval(tajmerNeaktivnosti);
-            }, parseInt(kliknutoDugme.value) + 2000);
-            
+            bajaFunkcije.hendlerKlikaSaTajmerom(event);
         }
-        else
-            alert(`Ćale nema dovoljno novca, potrebno je  jos ${this.prohtevZaParama * 1000 - this.cale.tajniStek} da se dete podmiti`)
     }
 }

@@ -1,6 +1,6 @@
 import { interval } from "rxjs";
-import { distinctUntilChanged, map, mapTo } from "rxjs/operators";
-import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from "constants";
+import { distinctUntilChanged, map, mapTo, tap } from "rxjs/operators";
+import * as bajaFunkcije from './MojeUtilityFunkcije';
 
 export class Cale
 {
@@ -17,14 +17,18 @@ export class Cale
         this.deca = [];
         this.kontejner = document.getElementsByName("caletovKontejner")[0];
 
-        this.emitovanjeSteka$ = interval(200)
-                                .pipe(map(vrednost => vrednost = this.tajniStek),
-                                      distinctUntilChanged());//i on sad kao stalno emituje pare kad se promene
-        this.emitovanjePlate$ = interval(500)
-                                .pipe(map(vrednost => vrednost = this.novacOdPlate),
-                                      distinctUntilChanged());//zena ce ovo osluskivati
-        this.primanjePlate$ = interval(5000)
-                              .pipe(mapTo(this.plata));
+        //
+        this.emitovanjeSteka$ = interval(200).pipe(
+            map(vrednost => vrednost = this.tajniStek),
+            distinctUntilChanged()
+        );//i on sad kao stalno emituje pare kad se promene
+        this.emitovanjePlate$ = interval(500).pipe(
+            map(vrednost => vrednost = this.novacOdPlate),
+            distinctUntilChanged()
+        );//zena ce ovo osluskivati
+        this.primanjePlate$ = interval(5000).pipe(
+            mapTo(this.plata)
+        );
 
         this.emitovanjeStekaPobedaSubscription = this.emitovanjeSteka$.subscribe((vrednost) => {
             if(this.krajnjiCiljUZivotu())
@@ -61,18 +65,7 @@ export class Cale
         for(let i=0; i < nizCaletovihOpcija.length; i++)
             nizCaletovihOpcija[i].onclick = (event) => {
                 this.zaradiPareVanPlate(event.target.value);
-                event.target.disabled = true;
-                let stariTekst = event.target.innerHTML;
-                let vrednostTajmera = parseInt(event.target.value)/1000;
-                
-                let tajmer = setInterval(() => event.target.innerHTML = vrednostTajmera--, 1000);
-
-                setTimeout(() => { 
-                    if(!this.krajnjiCiljUZivotu())
-                        event.target.disabled = false;
-                    event.target.innerHTML = stariTekst;
-                    clearInterval(tajmer);    
-                }, parseInt(event.target.value) + 2000);    
+                bajaFunkcije.hendlerKlikaSaTajmerom(event);   
             } 
     }
 
@@ -121,7 +114,6 @@ export class Cale
     {
         alert(`Pobedio sam, imam ${this.tajniStek} i srecan sam u iznosu od ${this.nivoZadovoljstva}`);
         document.querySelectorAll(`button`).forEach(dugme => {
-            console.log(dugme);
             dugme.disabled = true
         });
         this.primanjePlateSubscription.unsubscribe();

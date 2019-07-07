@@ -1,6 +1,7 @@
 import { Obaveza } from './Obaveza.js';
 import { interval } from 'rxjs';
-import { map, distinctUntilChanged, tap, filter } from 'rxjs/operators';
+import { map, distinctUntilChanged, tap, filter, sample } from 'rxjs/operators';
+import * as bajaFunkcije from './MojeUtilityFunkcije';
 
 export class Zena extends Obaveza
 {
@@ -16,11 +17,12 @@ export class Zena extends Obaveza
                                           distinctUntilChanged()
                                     );
 
-        this.pracenjeMuzevePlateSubscription = this.muz.primanjePlate$
-                                               .subscribe(() => {
-                                                   if(this.nivoZadovoljstva < 5)
-                                                        this.uzmiMuzuPare();
-                                               });
+        //muz dobije platu, to se emituje, zena stalno sempluje da vidi dal se promenilo, ako jeste uzima se
+        this.pracenjeMuzevePlateSubscription = this.muz.primanjePlate$.pipe(
+            sample(interval(1000)),
+            distinctUntilChanged()
+            ).subscribe(() => { if(this.nivoZadovoljstva < 5)
+                                    this.uzmiMuzuPare(); });
 
         this.promenaRaspolozenjaSubscription = this.promenaRaspolozenja$.subscribe(vrednost => this.nivoZadovoljstva = vrednost);
         this.promenaRaspolozenjaSubscription.add(this.farbanjeKontejneraSubscription);
@@ -39,10 +41,10 @@ export class Zena extends Obaveza
         `;
         this.kontejner.innerHTML += posebanSadrzajZaZenu;
 
-        this.kontejner.querySelector(`button[name="btnIzvediZenuNaVeceru"]`).addEventListener(`click`, (event) => this.izvediZenuNegde(event.target, 1));
-        this.kontejner.querySelector(`button[name="btnIzvediZenuUKupovinu"]`).addEventListener(`click`, (event) => this.izvediZenuNegde(event.target, 2));
+        this.kontejner.querySelector(`button[name="btnIzvediZenuNaVeceru"]`).addEventListener(`click`, (event) => this.izvediZenuNegde(event, 1));
+        this.kontejner.querySelector(`button[name="btnIzvediZenuUKupovinu"]`).addEventListener(`click`, (event) => this.izvediZenuNegde(event, 2));
 
-        this.kontejner.querySelector(`button[name="btnPozajmiPareOdTazbine"]`).addEventListener(`click`, (event) => this.uzmiPareOdTazbine(event.target));
+        this.kontejner.querySelector(`button[name="btnPozajmiPareOdTazbine"]`).addEventListener(`click`, (event) => this.uzmiPareOdTazbine(event));
 
         this.preracunajPocetnoZadovoljstvo();
     }
@@ -59,43 +61,26 @@ export class Zena extends Obaveza
         this.muz.azurirajNovacOdPlate(-1 * (10 - this.nivoZadovoljstva) * 50 * this.prohtevZaParama);
     }
 
-    izvediZenuNegde(dugmeAkcije, dodatakZadovoljstvu)
+    izvediZenuNegde(event, dodatakZadovoljstvu)
     {  
+        let dugmeAkcije = event.target;
         if(this.muz.novacOdPlate - parseInt(dugmeAkcije.value) >= 0)
         {
-            dugmeAkcije.disabled = true;
             this.muz.azurirajNovacOdPlate(-1 * parseInt(dugmeAkcije.value));
             this.muz.azurirajZadovoljstvo(dodatakZadovoljstvu);
             super.azurirajZadovoljstvo(dodatakZadovoljstvu);        
             
-            let stariTekst = dugmeAkcije.innerHTML;
-            let vrednostTajmera = parseInt(dugmeAkcije.value) / 1000;
-            let vrednostZaTimeout = (vrednostTajmera + 2) * 1000;
-            let tajmerNeaktivnosti = setInterval(() => dugmeAkcije.innerHTML = vrednostTajmera--, 1000);
-            setTimeout(() => {
-                if(!this.muz.krajnjiCiljUZivotu())
-                    dugmeAkcije.disabled = false;
-                dugmeAkcije.innerHTML = stariTekst;
-                clearInterval(tajmerNeaktivnosti);
-            }, vrednostZaTimeout);
+            bajaFunkcije.hendlerKlikaSaTajmerom(event);
         }
+        else
+            event.target.innerHTML = "Nema muz pare, a ovo ne treba biti hardkodovano";
     }
 
-    uzmiPareOdTazbine(dugmeAkcije)
+    uzmiPareOdTazbine(event)
     {
+        let dugmeAkcije = event.target;
         this.muz.azurirajStek(parseInt(dugmeAkcije.value));
         this.muz.azurirajZadovoljstvo(-5);
-        dugmeAkcije.disabled = true;
-
-        let stariTekst = dugmeAkcije.innerHTML;
-        let vrednostTajmera = 15;
-        let vrednostZaTimeout = (vrednostTajmera + 2) * 1000;
-        let tajmerNeaktivnosti = setInterval(() => dugmeAkcije.innerHTML = vrednostTajmera--, 1000);
-        setTimeout(() => {
-            if(!this.muz.krajnjiCiljUZivotu())
-                dugmeAkcije.disabled = false;
-            dugmeAkcije.innerHTML = stariTekst;
-            clearInterval(tajmerNeaktivnosti);
-        }, vrednostZaTimeout);
+        bajaFunkcije.hendlerKlikaSaTajmerom(event);
     }
 }
