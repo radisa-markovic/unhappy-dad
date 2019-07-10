@@ -36,7 +36,7 @@ export class Zena extends Obaveza
         let posebanSadrzajZaZenu = `<div class="btn-group-vertical">
                 <button name="btnIzvediZenuNaVeceru" value="${this.prohtevZaParama * 100}" class="btn btn-success" title="+1 sreća za oca +1, za ženu, -${this.prohtevZaParama * 1000} od novca od plate">Izvedi na večeru</button>
                 <button name="btnIzvediZenuUKupovinu" value="${this.prohtevZaParama * 100}" class="btn btn-success" title="+2 sreća za oca, +2 za ženu, -${this.prohtevZaParama * 1000} od novca od plate">Idi u kupovinu</button>
-                <button name="btnPozajmiPareOdTazbine" value="100000" class="btn btn-success" title="+100 000 u štek ulazi, -5 sreća za muža">Pozajmi novac od tazbine </button>
+                <button name="btnPozajmiPareOdTazbine" value="10000" class="btn btn-success" title="+100 000 u štek ulazi, -5 sreća za muža">Pozajmi novac od tazbine </button>
                 </div>
         `;
         this.kontejner.innerHTML += posebanSadrzajZaZenu;
@@ -79,7 +79,7 @@ export class Zena extends Obaveza
     uzmiPareOdTazbine(event)
     {
         let dugmeAkcije = event.target;
-        this.muz.azurirajStek(parseInt(dugmeAkcije.value));
+        this.muz.azurirajStek(parseInt(dugmeAkcije.value) * 10);
         this.muz.azurirajZadovoljstvo(-5);
         bajaFunkcije.hendlerKlikaSaTajmerom(event);
     }

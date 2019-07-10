@@ -17,8 +17,8 @@ export class Cale
         this.deca = [];
         this.kontejner = document.getElementsByName("caletovKontejner")[0];
 
-        //
-        this.emitovanjeSteka$ = interval(200).pipe(
+        //200 je prvobitno
+        this.emitovanjeSteka$ = interval(500).pipe(
             map(vrednost => vrednost = this.tajniStek),
             distinctUntilChanged()
         );//i on sad kao stalno emituje pare kad se promene

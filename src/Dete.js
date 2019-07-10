@@ -21,19 +21,21 @@ export class Dete extends Obaveza
                                         this.nivoZadovoljstva = vrednost;
         });
      
+        this.cale.primanjePlateSubscription.add(this.promenaZadovoljstvaSubscription);
         //ovo je mehanizam da dete samo uzme pare iz steka kad je nezadovoljno...
         //...zato je subscribe na promenu zadovoljstva
+        //kako da zamislim tok informacija ovde i kako da ih uskladim?
         this.pracenjeCaletovogSteka = this.promenaZadovoljstva$.subscribe(() => {
             let dugmePodmiti = this.kontejner.querySelector('button[name="btnPodmiti"]');
             if(this.nivoZadovoljstva <= 4)
             {
-                //stare supskripcije ostaju, te tzv zombi supskripcije menjaju tekst dugmeta
-                //dal da uradim switchMap nekako, tj dal on resava moj problem?
                 if(this.cale.tajniStek - this.prohtevZaParama * 1000 >= 0)
                 {
                     this.cale.azurirajStek(-1 * this.prohtevZaParama * 1000);
                     dugmePodmiti.innerHTML = `Dete je nezadovoljno, podmiti ili odlazi ${this.prohtevZaParama * 1000}`;
-                }            
+                }
+                else
+                    dugmePodmiti.innerHTML = `Nema para, imam ${this.cale.tajniStek}, a treba ${this.prohtevZaParama * 1000}`;            
             }
             else
                 dugmePodmiti.innerHTML = `Podmiti (košta: ${this.prohtevZaParama * 1000})`;
