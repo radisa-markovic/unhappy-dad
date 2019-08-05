@@ -1,16 +1,21 @@
-import { Obaveza } from './Obaveza.js';
+import { Obaveza } from '../ObavezaKomponenta/Obaveza';
+import { Cale } from '../CaleKomponenta/Cale';
+
 import { interval } from 'rxjs';
 import { map, distinctUntilChanged, sample } from 'rxjs/operators';
-import * as bajaFunkcije from './MojeUtilityFunkcije';
+import * as bajaFunkcije from '../MojeUtilityFunkcije';
 
 
 export class Dete extends Obaveza
 {
+    cale: Cale;
+    
     constructor(ime, prezime, godine, prohtevZaParama, cale)
     {
         super(ime, prezime, godine, prohtevZaParama, null);
         this.cale = cale;
-        this.nivoZadovoljstva = 5;
+        super.nivoZadovoljstva = 0;
+        this.
 
         this.promenaZadovoljstva$ = interval((100 - this.godine) * 100).pipe(
             sample(interval((100 - this.godine) * 50)), //nek sempluje upola manje od generisanja 
@@ -45,7 +50,7 @@ export class Dete extends Obaveza
         this.promenaZadovoljstvaSubscription.add(this.farbanjeKontejneraSubscription);
     }
 
-    nacrtajDete()
+    nacrtajDete(): void
     {
         document.getElementById("natkontejnerDece").querySelector("h3").innerHTML = "Deca:";
         this.kontejner = document.createElement('div');
@@ -62,7 +67,7 @@ export class Dete extends Obaveza
                                                             this.uzmiPareOdCaleta(event));
     }
 
-    uzmiPareOdCaleta(event)
+    uzmiPareOdCaleta(event): void
     {
         let kliknutoDugme = event.target;
         if((this.cale.tajniStek - this.prohtevZaParama * 1000) >= 0)

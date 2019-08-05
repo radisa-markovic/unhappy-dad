@@ -1,11 +1,18 @@
-import { Obaveza } from './Obaveza.js';
+import { Obaveza } from '../ObavezaKomponenta/Obaveza';
 import { interval } from 'rxjs';
 import { map, distinctUntilChanged, tap, filter, sample } from 'rxjs/operators';
-import * as bajaFunkcije from './MojeUtilityFunkcije';
+import * as bajaFunkcije from '../MojeUtilityFunkcije';
+import { Cale } from '../CaleKomponenta/Cale';
 
 export class Zena extends Obaveza
 {
-    constructor(ime, prezime, godine, prohtevZaParama, muz)
+    ime: string;
+    prezime: string;
+    godine: number;
+    prohtevZaParama: number;
+    muz: Cale;
+
+    constructor(ime: string, prezime: string, godine: string, prohtevZaParama: number, muz: Cale)
     {
         super(ime, prezime, godine, prohtevZaParama, document.getElementsByName('zeninKontejner')[0]);
         this.muz = muz;

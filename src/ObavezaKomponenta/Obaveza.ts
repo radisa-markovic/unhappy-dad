@@ -1,8 +1,15 @@
 import { interval } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
 
-export class Obaveza
+export abstract class Obaveza
 {
+    protected ime: string;
+    prezime: string;
+    godine: number;
+    nivoZadovoljstva: number;
+    prohtevZaParama: number;
+    kontejner: HTMLElement;
+
     constructor(ime, prezime, godine, prohtevZaParama, kontejner)
     {
         this.ime = ime;
@@ -27,7 +34,7 @@ export class Obaveza
         Prohtev za parama: <input type='number' name='inpProhtevZaParama' readonly value='${this.prohtevZaParama}'>`;    
     }
 
-    promeniBoju(vrednost)
+    promeniBoju(vrednost: number) : void
     {
         if(vrednost < 4)
             this.kontejner.style.backgroundColor = "red";
@@ -39,7 +46,7 @@ export class Obaveza
         this.azurirajZadovoljstvo(0);
     }
 
-    azurirajZadovoljstvo(vrednost)
+    azurirajZadovoljstvo(vrednost: number): void
     {
         this.nivoZadovoljstva = (this.nivoZadovoljstva + parseInt(vrednost));
         this.kontejner.querySelector(`input[name="inpZadovoljstvoObaveze"]`).value = this.nivoZadovoljstva;

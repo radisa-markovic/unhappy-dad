@@ -1,10 +1,23 @@
 import { interval } from "rxjs";
 import { distinctUntilChanged, map, mapTo, tap } from "rxjs/operators";
-import * as bajaFunkcije from './MojeUtilityFunkcije';
+import { Zena } from '../ZenaKomponenta/Zena';
+import { Dete } from '../DeteKomponenta/Dete';
+import * as bajaFunkcije from '../MojeUtilityFunkcije';
 
 export class Cale
 {
-    constructor(ime, prezime, godine, plata, novacOdPlate, tajniStek, zena)
+    ime: string;
+    prezime: string;
+    godine: number;
+    nivoZadovoljstva: number;
+    plata: number;
+    novacOdPlate: number;
+    tajniStek: number;
+    zena: Zena;
+    deca: Dete[];
+    kontejner: HTMLElement;
+
+    constructor(ime: string, prezime: string, godine: number, plata: number, novacOdPlate: number, tajniStek: number, zena: Zena)
     {
         this.ime = ime;
         this.prezime = prezime;
@@ -13,10 +26,11 @@ export class Cale
         this.plata = plata;
         this.novacOdPlate = novacOdPlate;
         this.tajniStek = tajniStek;
-        this.zena = zena;
+        this.zena = zena;//ovo moze da se sredi da bude bolje, isto i deca...jebiga, mlad sam i neiskusan bio
         this.deca = [];
         this.kontejner = document.getElementsByName("caletovKontejner")[0];
 
+        //i ovo treba da se sredi u stilu typescript-a i nekog normalnog odvajanja podataka
         //200 je prvobitno
         this.emitovanjeSteka$ = interval(500).pipe(
             map(vrednost => vrednost = this.tajniStek),
@@ -86,13 +100,13 @@ export class Cale
         document.querySelector('input[name="inpCaletovNivoZadovoljstva"]').value = this.nivoZadovoljstva;
     }
 
-    azurirajNovacOdPlate(iznos)
+    azurirajNovacOdPlate(iznos): void
     {
         this.novacOdPlate += iznos;
         this.kontejner.querySelector('input[name="inpCaletovNovacOdPlate"]').value = this.novacOdPlate;
     }
     
-    azurirajStek(vrednost)
+    azurirajStek(vrednost): void
     {
         this.tajniStek += vrednost;
         document.querySelector('input[name="inpCaletovTajniStek"]').value = this.tajniStek;
