@@ -1,7 +1,3 @@
-import { Cale } from './Cale.js';
-import { Zena } from './Zena.js';
-import { Dete } from './Dete.js';
-
 export const PUTANJA_DO_BAZE_PODATAKA = "http://localhost:3000";
 
 export class BazaPodatakaServis

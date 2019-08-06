@@ -1,4 +1,4 @@
-import { interval } from "rxjs";
+import { interval, Observable, Subscription } from "rxjs";
 import { distinctUntilChanged, map, mapTo, tap } from "rxjs/operators";
 import { Zena } from '../ZenaKomponenta/Zena';
 import { Dete } from '../DeteKomponenta/Dete';
@@ -6,18 +6,7 @@ import * as bajaFunkcije from '../MojeUtilityFunkcije';
 
 export class Cale
 {
-    ime: string;
-    prezime: string;
-    godine: number;
-    nivoZadovoljstva: number;
-    plata: number;
-    novacOdPlate: number;
-    tajniStek: number;
-    zena: Zena;
-    deca: Dete[];
-    kontejner: HTMLElement;
-
-    constructor(ime: string, prezime: string, godine: number, plata: number, novacOdPlate: number, tajniStek: number, zena: Zena)
+    constructor(ime, prezime, godine, plata, novacOdPlate, tajniStek)
     {
         this.ime = ime;
         this.prezime = prezime;
@@ -26,7 +15,7 @@ export class Cale
         this.plata = plata;
         this.novacOdPlate = novacOdPlate;
         this.tajniStek = tajniStek;
-        this.zena = zena;//ovo moze da se sredi da bude bolje, isto i deca...jebiga, mlad sam i neiskusan bio
+        this.zena = null;
         this.deca = [];
         this.kontejner = document.getElementsByName("caletovKontejner")[0];
 
@@ -44,17 +33,18 @@ export class Cale
             mapTo(this.plata)
         );
 
-        this.emitovanjeStekaPobedaSubscription = this.emitovanjeSteka$.subscribe((vrednost) => {
+        //jednom mora da se proglasi i da mu se dodeli vrednost, sve ostalo samo treba da se pokupi
+        this.glavniSubscription = this.emitovanjeSteka$.subscribe((vrednost) => {
             if(this.krajnjiCiljUZivotu())
                this.zavrsiIgru();
         });
-        this.primanjePlateSubscription = this.primanjePlate$.subscribe((plata) => {
+
+        this.glavniSubscription.add(this.primanjePlate$.subscribe((plata) => {
             this.primiPlatu(plata);
             if(this.krajnjiCiljUZivotu())
                 this.zavrsiIgru();
-        });
+        }));
 
-        this.primanjePlateSubscription.add(this.emitovanjeStekaPobedaSubscription);
     }
 
     nacrtajCaleta()
@@ -78,12 +68,17 @@ export class Cale
         let nizCaletovihOpcija = document.querySelectorAll('button[class="btn btn-success"]');
         for(let i=0; i < nizCaletovihOpcija.length; i++)
             nizCaletovihOpcija[i].onclick = (event) => {
-                this.zaradiPareVanPlate(event.target.value);
+                this.zaradiPareVanPlate(event.target.value); //mora ovaj kast, i ovde saljem string
                 bajaFunkcije.hendlerKlikaSaTajmerom(event);   
             } 
     }
 
-    zaradiPareVanPlate(vrednostPlena)
+    postaviZenu(zena)
+    {
+        this.zena = zena;//bolje je da se posle namesta
+    }
+
+    zaradiPareVanPlate(vrednostPlena) //moram da vidim kako deca i zena ovo koriste, mogu da ispravim i da ovo izbacim
     {
         this.azurirajStek(parseInt(vrednostPlena));
     }
@@ -97,26 +92,26 @@ export class Cale
     azurirajZadovoljstvo(vrednost)
     {
         this.nivoZadovoljstva += vrednost;
-        document.querySelector('input[name="inpCaletovNivoZadovoljstva"]').value = this.nivoZadovoljstva;
+        document.querySelector('input[name="inpCaletovNivoZadovoljstva"]').value = this.nivoZadovoljstva.toString();
     }
 
-    azurirajNovacOdPlate(iznos): void
+    azurirajNovacOdPlate(iznos)
     {
         this.novacOdPlate += iznos;
-        this.kontejner.querySelector('input[name="inpCaletovNovacOdPlate"]').value = this.novacOdPlate;
+        this.kontejner.querySelector('input[name="inpCaletovNovacOdPlate"]').value = this.novacOdPlate.toString();
     }
     
-    azurirajStek(vrednost): void
+    azurirajStek(vrednost)
     {
         this.tajniStek += vrednost;
-        document.querySelector('input[name="inpCaletovTajniStek"]').value = this.tajniStek;
+        document.querySelector('input[name="inpCaletovTajniStek"]').value = this.tajniStek.toString();
     }
 
     dodajDete(dete)
     {
         this.deca.push(dete);
-        this.azurirajZadovoljstvo(1);
-        this.emitovanjeStekaPobedaSubscription.add(dete.pracenjeCaletovogStekaSubscription);//nek bude da se ovako radi
+        this.azurirajZadovoljstvo(1);//moram kod dece da vodim evidenciju o ovim subscribe-ovima
+        this.glavniSubscription.add(dete.glavniSubscription);//nek bude da se ovako radi
     }
 
     krajnjiCiljUZivotu()
@@ -130,6 +125,6 @@ export class Cale
         document.querySelectorAll(`button`).forEach(dugme => {
             dugme.disabled = true
         });
-        this.primanjePlateSubscription.unsubscribe();
+        this.glavniSubscription.unsubscribe();//ovo okoncava sve mislim, svako emitovanje
     }
 }

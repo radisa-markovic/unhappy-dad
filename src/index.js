@@ -1,6 +1,6 @@
-import { Cale } from './Cale.js';
-import { Zena } from './Zena.js';
-import { Dete } from './Dete.js';
+import { Cale } from './CaleKomponenta/Cale';
+import { Zena } from './ZenaKomponenta/Zena';
+import { Dete } from './DeteKomponenta/Dete';
 import { ponasanjeOverlay } from './OverlayPonasanje.js';
 import * as bajaFunkcije from './MojeUtilityFunkcije';
 import { BazaPodatakaServis } from './BazaPodatakaServis.js';
@@ -31,12 +31,12 @@ function zapocniSimulaciju() { //ideja za switchMap: ovde dodje klik za start, a
 
 function glavnaFunkcijaPrograma(podatak) {
     let cale = new Cale(podatak.ime, podatak.prezime, podatak.godine, podatak.plata,
-        podatak.novacOdPlate, podatak.tajniStek, null);
+        podatak.novacOdPlate, podatak.tajniStek);
     cale.nacrtajCaleta();
     let zena = new Zena(podatak.zena.ime, podatak.zena.prezime, podatak.zena.godine,
         podatak.zena.prohtevZaParama, cale);
     zena.nacrtajZenu();
-    cale.zena = zena;
+    cale.postaviZenu(zena);
     podatak.deca.forEach(element => {
         let dete = new Dete(element.ime, element.prezime, element.godine,
             element.prohtevZaParama, cale);

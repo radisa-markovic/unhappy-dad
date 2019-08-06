@@ -1,45 +1,39 @@
 import { Obaveza } from '../ObavezaKomponenta/Obaveza';
-import { interval } from 'rxjs';
+import { interval, Observable } from 'rxjs';
 import { map, distinctUntilChanged, tap, filter, sample } from 'rxjs/operators';
 import * as bajaFunkcije from '../MojeUtilityFunkcije';
 import { Cale } from '../CaleKomponenta/Cale';
 
 export class Zena extends Obaveza
 {
-    ime: string;
-    prezime: string;
-    godine: number;
-    prohtevZaParama: number;
-    muz: Cale;
-
-    constructor(ime: string, prezime: string, godine: string, prohtevZaParama: number, muz: Cale)
+    constructor(ime, prezime, godine, prohtevZaParama, muz)
     {
         super(ime, prezime, godine, prohtevZaParama, document.getElementsByName('zeninKontejner')[0]);
-        this.muz = muz;
+        this.muz = muz;//zbog retardiranog koncepta mog projekta
    
-        this.promenaRaspolozenja$ = interval((100 - this.godine) * 500)
-                                    .pipe(map(vrednost => vrednost - 2),
-                                          filter(vrednost => vrednost < 10),
-                                          tap(vrednost => console.log("Medjuzadovoljstvo: " + vrednost)),
-                                          distinctUntilChanged()
-                                    );
+        //ova promena raspolozenja i uzimanje para moze da se stavi u neku klasu, ako cu po strategy-ju
+        this.promenaRaspolozenja$ = interval((100 - this.godine) * 500).pipe(
+            map(vrednost => vrednost - 2),
+            filter(vrednost => vrednost < 10),
+            tap(vrednost => console.log("Medjuzadovoljstvo: " + vrednost)),
+            distinctUntilChanged()
+        );
 
         //muz dobije platu, to se emituje, zena stalno sempluje da vidi dal se promenilo, ako jeste uzima se
-        this.pracenjeMuzevePlateSubscription = this.muz.primanjePlate$.pipe(
+        this.glavniSubscription = this.muz.primanjePlate$.pipe(
             sample(interval(1000)),
             distinctUntilChanged()
             ).subscribe(() => { if(this.nivoZadovoljstva < 5)
-                                    this.uzmiMuzuPare(); });
+                                    this.uzmiMuzuPare(); })
+        ;
 
-        this.promenaRaspolozenjaSubscription = this.promenaRaspolozenja$.subscribe(vrednost => this.nivoZadovoljstva = vrednost);
-        this.promenaRaspolozenjaSubscription.add(this.farbanjeKontejneraSubscription);
-        this.muz.primanjePlateSubscription.add(this.promenaRaspolozenjaSubscription);
+        this.glavniSubscription.add(this.promenaRaspolozenja$.subscribe(vrednost => this.nivoZadovoljstva = vrednost));
     }
 
     nacrtajZenu()
     {
         this.kontejner.querySelector("h3").innerHTML = "Žena:";
-        this.kontejner.innerHTML += super.vratiSadrzajObaveze();
+        this.kontejner.innerHTML += super.nacrtajObavezu();
         let posebanSadrzajZaZenu = `<div class="btn-group-vertical">
                 <button name="btnIzvediZenuNaVeceru" value="${this.prohtevZaParama * 100}" class="btn btn-success" title="+1 sreća za oca +1, za ženu, -${this.prohtevZaParama * 1000} od novca od plate">Izvedi na večeru</button>
                 <button name="btnIzvediZenuUKupovinu" value="${this.prohtevZaParama * 100}" class="btn btn-success" title="+2 sreća za oca, +2 za ženu, -${this.prohtevZaParama * 1000} od novca od plate">Idi u kupovinu</button>
@@ -60,7 +54,7 @@ export class Zena extends Obaveza
     {
         let muzevaPlata = this.muz.plata;
         this.nivoZadovoljstva += (Math.trunc(muzevaPlata / 10000) - Math.trunc(this.godine / 10)) % 10;
-        this.kontejner.querySelector("input[name='inpZadovoljstvoObaveze']").value = this.nivoZadovoljstva;
+        this.kontejner.querySelector("input[name='inpZadovoljstvoObaveze']").value = this.nivoZadovoljstva.toString();
     }
 
     uzmiMuzuPare()
@@ -80,7 +74,7 @@ export class Zena extends Obaveza
             bajaFunkcije.hendlerKlikaSaTajmerom(event);
         }
         else
-            event.target.innerHTML = "Nema muz pare, a ovo ne treba biti hardkodovano";
+            dugmeAkcije.innerHTML = "Nema muz pare, a ovo ne treba biti hardkodovano";
     }
 
     uzmiPareOdTazbine(event)

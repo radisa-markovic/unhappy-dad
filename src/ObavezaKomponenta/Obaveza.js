@@ -1,30 +1,23 @@
-import { interval } from 'rxjs';
+import { interval, Observable, Subscription } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
 
-export abstract class Obaveza
+export class Obaveza
 {
-    protected ime: string;
-    prezime: string;
-    godine: number;
-    nivoZadovoljstva: number;
-    prohtevZaParama: number;
-    kontejner: HTMLElement;
-
     constructor(ime, prezime, godine, prohtevZaParama, kontejner)
     {
         this.ime = ime;
         this.prezime = prezime;
         this.godine = godine;
-        this.nivoZadovoljstva = 0;
+        this.nivoZadovoljstva = 5;//nek bude neutralna vrednost
         this.prohtevZaParama = prohtevZaParama;
         this.kontejner = kontejner;//logicnije je da bude ovde
         this.emitovanjeZadovoljstva$ = interval(100)
-                                       .pipe(map(vrednost => this.nivoZadovoljstva),
+                                       .pipe(map(vrednost => vrednost = this.nivoZadovoljstva),
                                              distinctUntilChanged());                        
-        this.farbanjeKontejneraSubscription = this.emitovanjeZadovoljstva$.subscribe((vrednost) => this.promeniBoju(vrednost));
+        this.glavniSubscription = this.emitovanjeZadovoljstva$.subscribe((vrednost) => this.promeniBoju(vrednost));
     }
 
-    vratiSadrzajObaveze()
+    nacrtajObavezu()
     {
         return `<h3></h3>
         Ime: <input type='text' name='inpImeObaveze' readonly value='${this.ime}'>
@@ -34,7 +27,7 @@ export abstract class Obaveza
         Prohtev za parama: <input type='number' name='inpProhtevZaParama' readonly value='${this.prohtevZaParama}'>`;    
     }
 
-    promeniBoju(vrednost: number) : void
+    promeniBoju(vrednost)
     {
         if(vrednost < 4)
             this.kontejner.style.backgroundColor = "red";
@@ -46,9 +39,9 @@ export abstract class Obaveza
         this.azurirajZadovoljstvo(0);
     }
 
-    azurirajZadovoljstvo(vrednost: number): void
+    azurirajZadovoljstvo(vrednost)//moram tok ovoga da ispravim
     {
-        this.nivoZadovoljstva = (this.nivoZadovoljstva + parseInt(vrednost));
-        this.kontejner.querySelector(`input[name="inpZadovoljstvoObaveze"]`).value = this.nivoZadovoljstva;
+        this.nivoZadovoljstva += vrednost;//videcu ako je ovo negde string
+        this.kontejner.querySelector(`input[name="inpZadovoljstvoObaveze"]`).value = this.nivoZadovoljstva.toString();
     }
 }

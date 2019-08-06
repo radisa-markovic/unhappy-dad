@@ -1,7 +1,7 @@
 import { BazaPodatakaServis } from "./BazaPodatakaServis.js";
-import { Cale } from './Cale.js';
-import { Zena } from './Zena.js';
-import { Dete } from "./Dete.js";
+import { Cale } from './CaleKomponenta/Cale';
+import { Zena } from './ZenaKomponenta/Zena';
+import { Dete } from "./DeteKomponenta/Dete";
 import { fromEvent } from "rxjs";
 import { map, debounceTime } from "rxjs/operators"
 
