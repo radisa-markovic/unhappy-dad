@@ -42,6 +42,6 @@ export class Obaveza
     azurirajZadovoljstvo(vrednost)//moram tok ovoga da ispravim
     {
         this.nivoZadovoljstva += vrednost;//videcu ako je ovo negde string
-        this.kontejner.querySelector(`input[name="inpZadovoljstvoObaveze"]`).value = this.nivoZadovoljstva.toString();
+        this.kontejner.querySelector(`input[name="inpZadovoljstvoObaveze"]`).value = this.nivoZadovoljstva;
     }
 }

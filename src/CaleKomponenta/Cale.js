@@ -1,4 +1,4 @@
-import { interval, Observable, Subscription } from "rxjs";
+import { interval, Observable, Subscription, zip } from "rxjs";
 import { distinctUntilChanged, map, mapTo, tap } from "rxjs/operators";
 import { Zena } from '../ZenaKomponenta/Zena';
 import { Dete } from '../DeteKomponenta/Dete';
@@ -19,7 +19,6 @@ export class Cale
         this.deca = [];
         this.kontejner = document.getElementsByName("caletovKontejner")[0];
 
-        //i ovo treba da se sredi u stilu typescript-a i nekog normalnog odvajanja podataka
         //200 je prvobitno
         this.emitovanjeSteka$ = interval(500).pipe(
             map(vrednost => vrednost = this.tajniStek),
@@ -28,7 +27,8 @@ export class Cale
         this.emitovanjePlate$ = interval(500).pipe(
             map(vrednost => vrednost = this.novacOdPlate),
             distinctUntilChanged()
-        );//zena ce ovo osluskivati
+        );
+        
         this.primanjePlate$ = interval(5000).pipe(
             mapTo(this.plata)
         );
@@ -68,14 +68,21 @@ export class Cale
         let nizCaletovihOpcija = document.querySelectorAll('button[class="btn btn-success"]');
         for(let i=0; i < nizCaletovihOpcija.length; i++)
             nizCaletovihOpcija[i].onclick = (event) => {
-                this.zaradiPareVanPlate(event.target.value); //mora ovaj kast, i ovde saljem string
+                this.zaradiPareVanPlate(event.target.value);
                 bajaFunkcije.hendlerKlikaSaTajmerom(event);   
             } 
     }
 
+    //ovde cu i da ubacim zenino uzimanje para
     postaviZenu(zena)
     {
-        this.zena = zena;//bolje je da se posle namesta
+        this.zena = zena;
+        this.glavniSubscription.add(zip(this.primanjePlate$, zena.promenaRaspolozenja$).subscribe( ([plata, zeninoZadovoljstvo]) =>{
+            if(zeninoZadovoljstvo < 5)
+                this.azurirajNovacOdPlate(plata - (1 * (10 - this.zena.nivoZadovoljstva) * 50 * this.zena.prohtevZaParama));
+            else
+                this.azurirajNovacOdPlate(plata);
+        }));
     }
 
     zaradiPareVanPlate(vrednostPlena) //moram da vidim kako deca i zena ovo koriste, mogu da ispravim i da ovo izbacim

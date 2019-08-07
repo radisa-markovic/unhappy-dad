@@ -6,10 +6,10 @@ import { Cale } from '../CaleKomponenta/Cale';
 
 export class Zena extends Obaveza
 {
-    constructor(ime, prezime, godine, prohtevZaParama, muz)
+    constructor(ime, prezime, godine, prohtevZaParama)
     {
         super(ime, prezime, godine, prohtevZaParama, document.getElementsByName('zeninKontejner')[0]);
-        this.muz = muz;//zbog retardiranog koncepta mog projekta
+        this.muz = null;//metod ce ovo srediti
    
         //ova promena raspolozenja i uzimanje para moze da se stavi u neku klasu, ako cu po strategy-ju
         this.promenaRaspolozenja$ = interval((100 - this.godine) * 500).pipe(
@@ -19,15 +19,8 @@ export class Zena extends Obaveza
             distinctUntilChanged()
         );
 
-        //muz dobije platu, to se emituje, zena stalno sempluje da vidi dal se promenilo, ako jeste uzima se
-        this.glavniSubscription = this.muz.primanjePlate$.pipe(
-            sample(interval(1000)),
-            distinctUntilChanged()
-            ).subscribe(() => { if(this.nivoZadovoljstva < 5)
-                                    this.uzmiMuzuPare(); })
-        ;
-
-        this.glavniSubscription.add(this.promenaRaspolozenja$.subscribe(vrednost => this.nivoZadovoljstva = vrednost));
+        //fora je sta se desava ako muza nema ovde, tj dal ovo da stavim u metod? stavicu, ili sta vec
+        this.glavniSubscription = null;
     }
 
     nacrtajZenu()
@@ -50,6 +43,18 @@ export class Zena extends Obaveza
         this.preracunajPocetnoZadovoljstvo();
     }
 
+    postaviMuza(muz)
+    {
+        this.muz = muz;
+        this.glavniSubscription = this.muz.primanjePlate$.pipe(
+            sample(interval(1000)),
+            distinctUntilChanged()
+            ).subscribe(() => { if(this.nivoZadovoljstva < 5)
+                                    this.uzmiMuzuPare(); });
+
+       this.glavniSubscription.add(this.promenaRaspolozenja$.subscribe(vrednost => this.nivoZadovoljstva = vrednost));
+    }
+
     preracunajPocetnoZadovoljstvo()
     {
         let muzevaPlata = this.muz.plata;
@@ -57,6 +62,7 @@ export class Zena extends Obaveza
         this.kontejner.querySelector("input[name='inpZadovoljstvoObaveze']").value = this.nivoZadovoljstva.toString();
     }
 
+    //ovo mogu i da uklonim odavde mislim, posto sam dodao zip tamo gde treba, samo sad da testiram
     uzmiMuzuPare()
     {
         this.muz.azurirajNovacOdPlate(-1 * (10 - this.nivoZadovoljstva) * 50 * this.prohtevZaParama);

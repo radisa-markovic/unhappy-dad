@@ -16,45 +16,93 @@ class OverlayPonasanje
                                     map(event => event.target.value),
                                     debounceTime(1000)
                                 );
-        this.emitovanjeCaletovogPrezimena = new BehaviorSubject("Nesto");
+        this.emitovanjeCaletovogPrezimena = new BehaviorSubject("");
+        this.supskripcijaCale = this.caletovoPrezime$.subscribe(prezimeCaleta => this.emitovanjeCaletovogPrezimena.next(prezimeCaleta));
+       
         this.zeninDivOverlay = document.getElementById("zeninDivOverlay");
         this.zeninoPrezime$;
         this.kontejnerSveDeceOverlay = document.getElementById("velikiKontejnerDeceOverlay");
         this.dugmeZaPotvrdu = document.getElementById("btnPotvrdaPodataka");
 
         //ovo je hack koji je ruzan kao nista, al radi
-        this.supskripcijaCale = this.caletovoPrezime$.subscribe(prezimeCaleta => this.emitovanjeCaletovogPrezimena.next(prezimeCaleta));
         this.dodajDogadjajeElementima();
         this.pretplatiZeninoPrezime();
     }
 
     pretplatiZeninoPrezime()
     {
-      /*  let prezime;
-        this.caletovoPrezime$.subscribe(vrednost => prezime = vrednost);
-*/
-        
-        
-        this.zeninoPrezime$ = this.emitovanjeCaletovogPrezimena.subscribe((prezime) => { 
-            document.querySelector("input[name='inpZeninoPrezimeOverlay']").value = prezime;
-            console.log(prezime);
-        })
+        this.zeninoPrezime$ = this.emitovanjeCaletovogPrezimena.subscribe((prezime) =>  
+            document.querySelector("input[name='inpZeninoPrezimeOverlay']").value = prezime
+        )
     }
 
     dodajDogadjajeElementima()
     {
+        this.spustiOverlay();
+        this.podigniOverlay();
+        this.hendlerBrojaDece();        
+        this.potvrdiUpisPorodice();
+
+        // document.getElementById("btnPotvrdaPodataka").addEventListener("click", () => {
+        //     this.kontejnerZaCeoOverlay.style.height = '0%';
+        //     this.zeninoPrezime$.unsubscribe();
+        //     let cale = this.ucitajCaletaIzKontrola();
+        //     let zena = this.ucitajZenuIzKontrola();
+        //     let porodicaJSONObliku = {
+        //         "ime": cale.ime,
+        //         "prezime": cale.prezime,
+        //         "godine": parseInt(cale.godine),
+        //         "plata": parseInt(cale.plata),
+        //         "novacOdPlate": parseInt(cale.novacOdPlate),
+        //         "tajniStek": parseInt(cale.tajniStek),
+        //         "zena":{
+        //             "ime": zena.ime,
+        //             "prezime": zena.prezime,
+        //             "godine": parseInt(zena.godine),
+        //             "prohtevZaParama": parseInt(zena.prohtevZaParama)
+        //         },
+        //         "deca":
+        //         []
+        //     }
+        //     for(let i=0; i<this.kontejnerZaCeoOverlay.querySelector("input[name='inpOverlayBrojDece']").value; i++)
+        //     {
+        //         let privremenoDete = this.ucitajDeteIzKontrola(i);
+        //         let JSONPrivremenoDete = {
+        //             "ime": privremenoDete.ime,
+        //             "prezime": privremenoDete.prezime,
+        //             "godine": parseInt(privremenoDete.godine),
+        //             "nivoZadovoljstva": parseInt(privremenoDete.nivoZadovoljstva),
+        //             "prohtevZaParama": parseInt(privremenoDete.prohtevZaParama)
+        //         };
+        //         porodicaJSONObliku.deca.push(JSONPrivremenoDete);
+        //     }
+        //     BazaPodatakaServis.dodajPorodicu(porodicaJSONObliku);
+        // });
+    }
+
+    spustiOverlay()
+    {
         document.querySelector("button[name='btnOverlay']").addEventListener("click", () => {
             this.kontejnerZaCeoOverlay.style.height = '100%';
         });
+    }
 
+    podigniOverlay()
+    {
         this.kontejnerZaCeoOverlay.querySelector("button[name='btnPonisti']").addEventListener("click", () => {
             this.kontejnerZaCeoOverlay.style.height = '0%';
             this.zeninoPrezime$.unsubscribe();//pokusaj sprecavanje curenja memorije
         });
+    }
 
+    hendlerBrojaDece()
+    {
         this.kontejnerZaCeoOverlay.querySelector("input[name='inpOverlayBrojDece']")
         .addEventListener("change", () => this.ucitajFormeZaUnosDece());
+    }
 
+    potvrdiUpisPorodice()
+    {
         document.getElementById("btnPotvrdaPodataka").addEventListener("click", () => {
             this.kontejnerZaCeoOverlay.style.height = '0%';
             this.zeninoPrezime$.unsubscribe();
@@ -92,14 +140,18 @@ class OverlayPonasanje
         });
     }
 
-
     ucitajFormeZaUnosDece()
     {
         let poljeZaBrojDece = this.kontejnerZaCeoOverlay.querySelector("input[name='inpOverlayBrojDece']");
         while(this.kontejnerSveDeceOverlay.firstChild)
             this.kontejnerSveDeceOverlay.removeChild(this.kontejnerSveDeceOverlay.firstChild);
+        
         let brojDece = parseInt(poljeZaBrojDece.value);
-        for(let i=0; i<brojDece; i++)
+        if(brojDece < 0)
+            brojDece = 0;
+        
+        this.kontejnerZaCeoOverlay.querySelector("input[name='inpOverlayBrojDece']").value = brojDece;
+        for(let i=0; i < brojDece; i++)
         {
             let divJednogDeteta = document.createElement("div");
             divJednogDeteta.className = "list-group";
@@ -138,7 +190,7 @@ class OverlayPonasanje
         let godine = this.zeninDivOverlay.querySelector("input[name='inpZenineGodineOverlay']").value;
         let prohtevZaParama = this.zeninDivOverlay.querySelector("input[name='inpZeninProhtevZaParama']").value;
 
-        return new Zena(ime, prezime, godine, prohtevZaParama);
+        return new Zena(ime, prezime, godine, prohtevZaParama);//ovo je fora sto caleta nemam u konstruktoru...
     }
 
     ucitajDeteIzKontrola(redniBrojDeteta)

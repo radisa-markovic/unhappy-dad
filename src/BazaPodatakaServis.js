@@ -42,7 +42,7 @@ export class BazaPodatakaServis
                'Content-type': 'application/json'
             },
             body: JSON.stringify(prosledjeniObjekat)
-        }).then(() => BazaPodatakaServis.vratiSvePorodice())
+        }).then(() => BazaPodatakaServis.vratiSvePorodice()) //ovaj korak je nejasan... al on je zbog retardiranog selektora
         .catch(greska => console.log(greska));
     }
 
