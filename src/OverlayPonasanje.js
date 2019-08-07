@@ -2,7 +2,7 @@ import { BazaPodatakaServis } from "./BazaPodatakaServis.js";
 import { Cale } from './CaleKomponenta/Cale';
 import { Zena } from './ZenaKomponenta/Zena';
 import { Dete } from "./DeteKomponenta/Dete";
-import { fromEvent } from "rxjs";
+import { fromEvent, BehaviorSubject } from "rxjs";
 import { map, debounceTime } from "rxjs/operators"
 
 class OverlayPonasanje
@@ -12,21 +12,33 @@ class OverlayPonasanje
         this.kontejnerZaCeoOverlay = document.getElementById("overlay");
         this.caletovDivOverlay = document.getElementById("caletovDivOverlay");
         this.caletovoPrezime$ = fromEvent(document.querySelector("input[name='inpCaletovoPrezimeOverlay']"), 'input')
-                                .pipe(map(event => event.target.value),
-                                debounceTime(500));//nek bude da se ovako radi
+                                .pipe(
+                                    map(event => event.target.value),
+                                    debounceTime(1000)
+                                );
+        this.emitovanjeCaletovogPrezimena = new BehaviorSubject("Nesto");
         this.zeninDivOverlay = document.getElementById("zeninDivOverlay");
         this.zeninoPrezime$;
         this.kontejnerSveDeceOverlay = document.getElementById("velikiKontejnerDeceOverlay");
         this.dugmeZaPotvrdu = document.getElementById("btnPotvrdaPodataka");
 
+        //ovo je hack koji je ruzan kao nista, al radi
+        this.supskripcijaCale = this.caletovoPrezime$.subscribe(prezimeCaleta => this.emitovanjeCaletovogPrezimena.next(prezimeCaleta));
         this.dodajDogadjajeElementima();
         this.pretplatiZeninoPrezime();
     }
 
     pretplatiZeninoPrezime()
     {
-        this.zeninoPrezime$ = this.caletovoPrezime$.subscribe((prezime) => 
-        document.querySelector("input[name='inpZeninoPrezimeOverlay']").value = prezime);
+      /*  let prezime;
+        this.caletovoPrezime$.subscribe(vrednost => prezime = vrednost);
+*/
+        
+        
+        this.zeninoPrezime$ = this.emitovanjeCaletovogPrezimena.subscribe((prezime) => { 
+            document.querySelector("input[name='inpZeninoPrezimeOverlay']").value = prezime;
+            console.log(prezime);
+        })
     }
 
     dodajDogadjajeElementima()
@@ -100,7 +112,7 @@ class OverlayPonasanje
                 <input type="number" name="inpOverlayDeteProhtevZaParama" placeholder="Unesi prohtev za parama">
                 `;
             this.kontejnerSveDeceOverlay.appendChild(divJednogDeteta);
-            let pretplataDeteta = this.caletovoPrezime$.subscribe((prezime) => { 
+            let pretplataDeteta = this.emitovanjeCaletovogPrezimena.subscribe((prezime) => { 
                 this.kontejnerSveDeceOverlay.querySelectorAll("input[name='inpOverlayDetePrezime']")[i].value = prezime;
             });
             this.zeninoPrezime$.add(pretplataDeteta);
