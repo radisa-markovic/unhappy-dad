@@ -1,7 +1,7 @@
 import { Cale } from './CaleKomponenta/Cale';
 import { Zena } from './ZenaKomponenta/Zena';
 import { Dete } from './DeteKomponenta/Dete';
-import { ponasanjeOverlay } from './OverlayPonasanje.js';
+import { OverlayPonasanje } from './OverlayPonasanje';
 import * as bajaFunkcije from './MojeUtilityFunkcije';
 import { BazaPodatakaServis } from './BazaPodatakaServis.js';
 import { Tajmer } from './Tajmer';
@@ -10,6 +10,7 @@ import { map, tap, debounceTime, filter, switchMap, scan, take } from 'rxjs/oper
 
 BazaPodatakaServis.vratiSvePorodice();
 document.querySelector('button[name="btnPotvrde"]').addEventListener("click", zapocniSimulaciju);
+const ponasanjeOverlay = new OverlayPonasanje();
 
 function zapocniSimulaciju() { //ideja za switchMap: ovde dodje klik za start, a ja promenim na emitovanje plate npr
     //ili nesto slicno, switchMap ne znam gde bih jos mogao da koristim...

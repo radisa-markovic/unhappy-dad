@@ -5,7 +5,7 @@ import { Dete } from "./DeteKomponenta/Dete";
 import { fromEvent, BehaviorSubject } from "rxjs";
 import { map, debounceTime } from "rxjs/operators"
 
-class OverlayPonasanje
+export class OverlayPonasanje
 {
     constructor()
     {
@@ -205,4 +205,4 @@ class OverlayPonasanje
     }
 }
 
-export const ponasanjeOverlay = new OverlayPonasanje();
+//export const ponasanjeOverlay = new OverlayPonasanje();
