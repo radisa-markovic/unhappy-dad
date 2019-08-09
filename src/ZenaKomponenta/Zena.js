@@ -9,18 +9,17 @@ export class Zena extends Obaveza
     constructor(ime, prezime, godine, prohtevZaParama)
     {
         super(ime, prezime, godine, prohtevZaParama, document.getElementsByName('zeninKontejner')[0]);
-        this.muz = null;//metod ce ovo srediti
-   
-        //ova promena raspolozenja i uzimanje para moze da se stavi u neku klasu, ako cu po strategy-ju
-        this.promenaRaspolozenja$ = interval((100 - this.godine) * 500).pipe(
+        this.muz = null;
+
+        //ovo malo da razradim...
+        this.promenaRaspolozenja$ = interval((100 - this.godine) * 250).pipe(
             map(vrednost => vrednost - 2),
             filter(vrednost => vrednost < 10),
             tap(vrednost => console.log("Medjuzadovoljstvo: " + vrednost)),
             distinctUntilChanged()
         );
 
-        //fora je sta se desava ako muza nema ovde, tj dal ovo da stavim u metod? stavicu, ili sta vec
-        this.glavniSubscription = null;
+        this.glavniSubscription = this.promenaRaspolozenja$.subscribe(vrednost => this.nivoZadovoljstva = vrednost);
     }
 
     nacrtajZenu()
@@ -46,13 +45,14 @@ export class Zena extends Obaveza
     postaviMuza(muz)
     {
         this.muz = muz;
+        /*
         this.glavniSubscription = this.muz.primanjePlate$.pipe(
             sample(interval(1000)),
             distinctUntilChanged()
             ).subscribe(() => { if(this.nivoZadovoljstva < 5)
-                                    this.uzmiMuzuPare(); });
+                                    this.uzmiMuzuPare(); });*/
 
-       this.glavniSubscription.add(this.promenaRaspolozenja$.subscribe(vrednost => this.nivoZadovoljstva = vrednost));
+       //this.glavniSubscription.add(this.promenaRaspolozenja$.subscribe(vrednost => this.nivoZadovoljstva = vrednost));
     }
 
     preracunajPocetnoZadovoljstvo()

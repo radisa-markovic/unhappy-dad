@@ -62,7 +62,6 @@ export class Dete extends Obaveza
 
     uzmiPareOdCaleta(event)
     {
-        // let kliknutoDugme: HTMLButtonElement = event.target; posle cu ukloniti ako smeta
         if((this.cale.tajniStek - this.prohtevZaParama * 1000) >= 0)
         {
             this.cale.azurirajStek(-1 * this.prohtevZaParama * 1000);

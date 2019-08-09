@@ -36,10 +36,9 @@ export class Obaveza
                 this.kontejner.style.backgroundColor = "yellow";
             else
                 this.kontejner.style.backgroundColor = "green";
-        this.azurirajZadovoljstvo(0);
     }
 
-    azurirajZadovoljstvo(vrednost)//moram tok ovoga da ispravim
+    azurirajZadovoljstvo(vrednost)
     {
         this.nivoZadovoljstva += vrednost;//videcu ako je ovo negde string
         this.kontejner.querySelector(`input[name="inpZadovoljstvoObaveze"]`).value = this.nivoZadovoljstva;

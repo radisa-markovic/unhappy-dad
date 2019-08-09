@@ -73,15 +73,18 @@ export class Cale
             } 
     }
 
-    //ovde cu i da ubacim zenino uzimanje para
     postaviZenu(zena)
     {
-        this.zena = zena;
+        this.zena = zena; //ovde bi trebao da posaljem emitovanje zeninog zadovoljstva kao argument...
         this.glavniSubscription.add(zip(this.primanjePlate$, zena.promenaRaspolozenja$).subscribe( ([plata, zeninoZadovoljstvo]) =>{
             if(zeninoZadovoljstvo < 5)
+            {
                 this.azurirajNovacOdPlate(plata - (1 * (10 - this.zena.nivoZadovoljstva) * 50 * this.zena.prohtevZaParama));
+                this.zena.azurirajZadovoljstvo(2);//postaje srecnija kad mu uzme pare
+            }
             else
                 this.azurirajNovacOdPlate(plata);
+            console.log(`Plata: ${plata}, zena zadodovoljna: ${zeninoZadovoljstvo}`);
         }));
     }
 
@@ -117,8 +120,8 @@ export class Cale
     dodajDete(dete)
     {
         this.deca.push(dete);
-        this.azurirajZadovoljstvo(1);//moram kod dece da vodim evidenciju o ovim subscribe-ovima
-        this.glavniSubscription.add(dete.glavniSubscription);//nek bude da se ovako radi
+        this.azurirajZadovoljstvo(1);
+        this.glavniSubscription.add(dete.glavniSubscription);
     }
 
     krajnjiCiljUZivotu()
@@ -132,6 +135,6 @@ export class Cale
         document.querySelectorAll(`button`).forEach(dugme => {
             dugme.disabled = true
         });
-        this.glavniSubscription.unsubscribe();//ovo okoncava sve mislim, svako emitovanje
+        this.glavniSubscription.unsubscribe();
     }
 }

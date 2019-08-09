@@ -19,7 +19,8 @@ function zapocniSimulaciju() { //ideja za switchMap: ovde dodje klik za start, a
 }
 
 
-function glavnaFunkcijaPrograma(podatak) {
+function glavnaFunkcijaPrograma(podatak)
+{
     let cale = new Cale(podatak.ime, podatak.prezime, podatak.godine, podatak.plata,
         podatak.novacOdPlate, podatak.tajniStek);
     cale.nacrtajCaleta();
