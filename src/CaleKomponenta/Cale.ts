@@ -6,7 +6,15 @@ import * as bajaFunkcije from '../MojeUtilityFunkcije';
 
 export class Cale
 {
-    constructor(ime, prezime, godine, plata, novacOdPlate, tajniStek)
+    ime: string;
+    prezime: string;
+    godine: number;
+    nivoZadovoljstva: number;
+    plata: number;
+    novacOdPlate: number;
+    tajniStek: number;
+    
+    constructor(ime: string, prezime: string, godine: number, plata: number, novacOdPlate: number, tajniStek: number)
     {
         this.ime = ime;
         this.prezime = prezime;
