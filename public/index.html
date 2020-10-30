@@ -6,13 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Nesrećni ćale</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/united/bootstrap.min.css">
-    <link rel="stylesheet" href="./CSS/udesavanje.css">
+    <link rel="stylesheet" href="../CSS/udesavanje.css">
 </head>
 <body>
 
     <div class="header">
-      <div class="jumbotron">Nesrećni ćale
-        
+      <div class="jumbotron">
+          <h1><strong>Nesrećni ćale</strong></h1>
       </div>
     </div>
 
@@ -20,7 +20,7 @@
     <div class="container">
         <div id='kontejnerSelektora'>
             Izaberi porodicu:
-            <select name='selIzborFamilije' class="form-control">
+            <select id='selektorIzboraFamilije' class="form-control">
             </select>
             <button name="btnOverlay" class="btn btn-danger">Unesi novu porodicu</button>
             <button name='btnPotvrde' class="btn btn-primary" >Potvrdi izbor i započni</button>
@@ -30,21 +30,20 @@
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6">
                     <div name='caletovKontejner' class="list-group">
-                        <h3></h3>    
+                        <!--dinamicki nacrtati caleta-->>    
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6">
                     <div name='zeninKontejner' class="list-group">
+                        <!--dinamicki nacrtati zenu-->
                         <h3></h3>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="container" id="natkontejnerDece">
-            <h3></h3>
-            <div class="row" id="kontejnerDece">
-
-            </div>
+        <div class="row" id="kontejnerDece">
+            <!--dinamicki nacrtati decu ovde-->
+            
         </div>
     </div>  
     
@@ -55,12 +54,24 @@
                     <div class="container" id="caletovDivOverlay">
                         <h3>Detalji o ocu:</h3>
                         <div class="list-group">
-                            <input type="text" name="inpCaletovoImeOverlay" placeholder="Unesi ime">
-                            <input type="text" name="inpCaletovoPrezimeOverlay" placeholder="Unesi prezime">
-                            <input type="number" name="inpCaletoveGodineOverlay" placeholder="Unesi broj godina">
-                            <input type="number" name="inpCaletovaPlataOverlay" placeholder="Unesi mesečnu platu">
-                            <input type="number" name="inpDosadasnjiNovacOdPlate" placeholder="Dosadašnji novac od plate">
-                            <input type="number" name="inpCaletovStekOverlay" placeholder="Uneti početni štek">
+                            <input type="text" 
+                                   name="inpCaletovoImeOverlay" 
+                                   placeholder="Unesi ime">
+                            <input type="text" 
+                                   name="inpCaletovoPrezimeOverlay" 
+                                   placeholder="Unesi prezime">
+                            <input type="number" 
+                                   name="inpCaletoveGodineOverlay" 
+                                   placeholder="Unesi broj godina">
+                            <input type="number" 
+                                   name="inpCaletovaPlataOverlay" 
+                                   placeholder="Unesi mesečnu platu">
+                            <input type="number" 
+                                   name="inpDosadasnjiNovacOdPlate" 
+                                   placeholder="Dosadašnji novac od plate">
+                            <input type="number" 
+                                   name="inpCaletovStekOverlay" 
+                                   placeholder="Uneti početni štek">
                         </div>
                     </div>
                 </div>
