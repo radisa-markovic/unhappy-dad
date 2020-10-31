@@ -3,7 +3,6 @@ import { ZenaKomponenta } from './components/ZenaKomponenta';
 import { DeteKomponenta } from './components/DeteKomponenta';
 import { OverlayPonasanje } from './OverlayPonasanje';
 //import * as bajaFunkcije from './MojeUtilityFunkcije';
-import { BazaPodatakaServis } from './BazaPodatakaServis.js';
 import { Porodica } from './models/Porodica';
 
 let caleKomponenta: CaleKomponenta;
@@ -55,7 +54,7 @@ selektor.addEventListener("change", async (): Promise<void> => {
     
     let deca = porodica.deca;
     deca.forEach((dete) => {
-        let deteKomponenta = new DeteKomponenta(dete);
+        let deteKomponenta = new DeteKomponenta(dete, caleKomponenta);
         divDece.appendChild(deteKomponenta.nacrtajDete());
     });
 });
@@ -64,31 +63,3 @@ dugmePotvrde.addEventListener('click', () => {
     dugmePotvrde.disabled = true;
     //i ovde se zapocinje simulacija kao...
 });
-
-// function zapocniSimulaciju() { //ideja za switchMap: ovde dodje klik za start, a ja promenim na emitovanje plate npr
-//     //ili nesto slicno, switchMap ne znam gde bih jos mogao da koristim...
-//     let selektor = document.querySelector("select");
-//     BazaPodatakaServis.ucitajJednuPorodicu(selektor.options[selektor.selectedIndex].value, glavnaFunkcijaPrograma);
-//     selektor.disabled = true;
-// }
-
-
-// function glavnaFunkcijaPrograma(podatak)
-// {
-//     let cale = new Cale(podatak.ime, podatak.prezime, podatak.godine, podatak.plata,
-//         podatak.novacOdPlate, podatak.tajniStek);
-//     cale.nacrtajCaleta();
-//     let zena = new Zena(podatak.zena.ime, podatak.zena.prezime, podatak.zena.godine,
-//         podatak.zena.prohtevZaParama, cale);
-//     zena.postaviMuza(cale); //koliko je ovaj kod ruzan...
-//     zena.nacrtajZenu();
-//     cale.postaviZenu(zena);
-    
-//     podatak.deca.forEach(element => {
-//         let dete = new Dete(element.ime, element.prezime, element.godine,
-//             element.prohtevZaParama, cale);
-//         cale.dodajDete(dete);
-//         dete.nacrtajDete();
-//     });
-
-//}

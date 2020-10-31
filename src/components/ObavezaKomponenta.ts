@@ -9,10 +9,6 @@ export class ObavezaKomponenta
                 public nivoZadovoljstva: number)
     {
         this.kontejner = document.createElement("div");
-    //     this.emitovanjeZadovoljstva$ = interval(100)
-    //                                    .pipe(map(vrednost => vrednost = this.nivoZadovoljstva),
-    //                                          distinctUntilChanged());                        
-    //     this.glavniSubscription = this.emitovanjeZadovoljstva$.subscribe((vrednost) => this.promeniBoju(vrednost));
     }
 
     nacrtajObavezu(): HTMLElement
@@ -55,20 +51,9 @@ export class ObavezaKomponenta
         return this.kontejner;
     }
 
-    // promeniBoju(vrednost)
-    // {
-    //     if(vrednost < 4)
-    //         this.kontejner.style.backgroundColor = "red";
-    //     else
-    //         if(vrednost < 7)
-    //             this.kontejner.style.backgroundColor = "yellow";
-    //         else
-    //             this.kontejner.style.backgroundColor = "green";
-    // }
-
     azurirajZadovoljstvo(vrednost: number): void
     {
-        this.nivoZadovoljstva += vrednost;//videcu ako je ovo negde string
+        this.nivoZadovoljstva += vrednost;
         (<HTMLInputElement>this.kontejner.querySelector(`input[name="inpZadovoljstvoObaveze"]`))!.value = this.nivoZadovoljstva.toString();
     }
 }

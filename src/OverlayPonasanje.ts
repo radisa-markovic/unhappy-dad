@@ -1,4 +1,3 @@
-import { BazaPodatakaServis } from "./BazaPodatakaServis.js";
 import { CaleKomponenta } from './components/CaleKomponenta';
 import { ZenaKomponenta } from './components/ZenaKomponenta';
 import { DeteKomponenta } from "./components/DeteKomponenta";

@@ -4,105 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Nesrećni ćale</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/united/bootstrap.min.css">
-    <link rel="stylesheet" href="../CSS/udesavanje.css">
+    <title>Nesrećni ćale &trade &copy Radiša Marković</title>
+    <link rel="stylesheet" 
+          href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/united/bootstrap.min.css">
+    <link rel="stylesheet" 
+          href="../CSS/udesavanje.css">
 </head>
 <body>
-
-    <div class="header">
-      <div class="jumbotron">
-          <h1><strong>Nesrećni ćale</strong></h1>
-      </div>
-    </div>
-
-    
+    <h1 class="header jumbotron"><strong>Nesrećni ćale™ &copy Radiša Marković</strong></h1>
     <div class="container">
         <div id='kontejnerSelektora'>
             Izaberi porodicu:
             <select id='selektorIzboraFamilije' class="form-control">
             </select>
-            <button name="btnOverlay" class="btn btn-danger">Unesi novu porodicu</button>
-            <button name='btnPotvrde' class="btn btn-primary" >Potvrdi izbor i započni</button>
-            <a href="http://localhost:3000/porodice" target="_blank" class="btn btn-link">Pogledati sve porodice</a>
+            <button name="btnOverlay" 
+                    class="btn btn-danger">
+                Unesi novu porodicu
+            </button>
+            <button name='btnPotvrde' 
+                    class="btn btn-primary">
+                Potvrdi izbor i započni
+            </button>
+            <a href="http://localhost:3000/porodice" 
+               target="_blank" 
+               class="btn btn-link">
+               Pogledati sve porodice
+            </a>
         </div>
-        <div name='kontejnerCaletaIZene' class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                    <div name='caletovKontejner' class="list-group">
-                        <!--dinamicki nacrtati caleta-->>    
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                    <div name='zeninKontejner' class="list-group">
-                        <!--dinamicki nacrtati zenu-->
-                        <h3></h3>
-                    </div>
-                </div>
+        <div name='kontejnerCaletaIZene' class="container row">
+            <div class="col-md-6 col-sm-6 col-xs-6 list-group"
+                 name='caletovKontejner'>
+                <!--dinamicki nacrtati caleta-->    
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6 list-group"
+                 name='zeninKontejner'>
+                <!--dinamicki nacrtati zenu-->
             </div>
         </div>
         <div class="row" id="kontejnerDece">
             <!--dinamicki nacrtati decu ovde-->
-            
         </div>
     </div>  
     
-    <div id="overlay">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                    <div class="container" id="caletovDivOverlay">
-                        <h3>Detalji o ocu:</h3>
-                        <div class="list-group">
-                            <input type="text" 
-                                   name="inpCaletovoImeOverlay" 
-                                   placeholder="Unesi ime">
-                            <input type="text" 
-                                   name="inpCaletovoPrezimeOverlay" 
-                                   placeholder="Unesi prezime">
-                            <input type="number" 
-                                   name="inpCaletoveGodineOverlay" 
-                                   placeholder="Unesi broj godina">
-                            <input type="number" 
-                                   name="inpCaletovaPlataOverlay" 
-                                   placeholder="Unesi mesečnu platu">
-                            <input type="number" 
-                                   name="inpDosadasnjiNovacOdPlate" 
-                                   placeholder="Dosadašnji novac od plate">
-                            <input type="number" 
-                                   name="inpCaletovStekOverlay" 
-                                   placeholder="Uneti početni štek">
-                        </div>
+    <!--ovo je ona overlay forma za dodavanje porodice, ono kad nisam znao sta je rutiranje-->
+    <div id="overlay" class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6 container"
+                    id="caletovDivOverlay">
+                    <h3>Detalji o ocu:</h3>
+                    <div class="list-group">
+                        <input type="text" 
+                                name="inpCaletovoImeOverlay" 
+                                placeholder="Unesi ime">
+                        <input type="text" 
+                                name="inpCaletovoPrezimeOverlay" 
+                                placeholder="Unesi prezime">
+                        <input type="number" 
+                                name="inpCaletoveGodineOverlay" 
+                                placeholder="Unesi broj godina">
+                        <input type="number" 
+                                name="inpCaletovaPlataOverlay" 
+                                placeholder="Unesi mesečnu platu">
+                        <input type="number" 
+                                name="inpDosadasnjiNovacOdPlate" 
+                                placeholder="Dosadašnji novac od plate">
+                        <input type="number" 
+                                name="inpCaletovStekOverlay" 
+                                placeholder="Uneti početni štek">
                     </div>
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                    <div class="container" id="zeninDivOverlay">
-                        <h3>Detalji o majci:</h3>
-                        <div class="list-group">
-                            <input type="text" name="inpZeninoImeOverlay" placeholder="Unesi ime">
-                            <input type="text" name="inpZeninoPrezimeOverlay" readonly>
-                            <input type="number" name="inpZenineGodineOverlay" placeholder="Unesi broj godina">
-                            <input type="number" name="inpZeninProhtevZaParama" placeholder="Unesi prohtev za parama">
-                        </div>
-                    </div>
-                </div>
             </div>
-            <br/>
-            <div class="container">
-                <h3>Broj dece:</h3>
-                <input type="number" name="inpOverlayBrojDece" placeholder="Unesi broj dece">
-            </div>
-            <div class="container">
-                <div class="row" id="velikiKontejnerDeceOverlay">
-                    
+            <div class="col-md-6 col-sm-6 col-xs-6 container"
+                    id="zeninDivOverlay">
+                <h3>Detalji o majci:</h3>
+                <div class="list-group">
+                    <input type="text" 
+                            name="inpZeninoImeOverlay" 
+                            placeholder="Unesi ime">
+                    <input type="text" 
+                            name="inpZeninoPrezimeOverlay" 
+                            readonly>
+                    <input type="number" 
+                            name="inpZenineGodineOverlay" 
+                            placeholder="Unesi broj godina">
+                    <input type="number" 
+                            name="inpZeninProhtevZaParama" 
+                            placeholder="Unesi prohtev za parama">
                 </div>
-            </div>
-            <div class="container">
-                <button class="btn btn-primary" id="btnPotvrdaPodataka">Potvrdi</button>
-                <button class="btn btn-danger" name="btnPonisti">Poništi</button>
             </div>
         </div>
-        
+        <br/>
+        <div class="container">
+            <h3>Broj dece:</h3>
+            <input type="number" name="inpOverlayBrojDece" placeholder="Unesi broj dece">
+        </div>
+        <div class="container row" id="velikiKontejnerDeceOverlay">
+        </div>
+        <div class="container">
+            <button class="btn btn-primary" id="btnPotvrdaPodataka">Potvrdi</button>
+            <button class="btn btn-danger" name="btnPonisti">Poništi</button>
+        </div>
     </div>
     <script src='./bundle.js'></script>
 </body>

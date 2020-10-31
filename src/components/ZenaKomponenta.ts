@@ -1,27 +1,16 @@
-import { Cale } from '../models/Cale';
 import { Zena } from '../models/Zena';
+import Reaktivnost from '../reaktivneStvari/Reaktivnost';
 import { CaleKomponenta } from './CaleKomponenta';
 import { ObavezaKomponenta } from './ObavezaKomponenta';
 
 export class ZenaKomponenta extends ObavezaKomponenta
 {
-    //dodati muza, i mozda referencu na decu, mada prvenstveno na muza, pa cu vidim kako ovo skalira sutradan
-    //konkretno mi ovdde treba muz model, tako nekako sam nazvao ono u konstruktoru komponenti
-    constructor(public zenaModel: Zena, public muz: CaleKomponenta) //nek bude da ima referencu na komponentu, umesto na model
+    public reaktivnost: Reaktivnost;
+
+    constructor(public zenaModel: Zena, public muz: CaleKomponenta)
     {
         super(zenaModel, 0);//nivo zadovoljstva trebam da preracunam
-        //document.getElementsByName('zeninKontejner')[0]
-        // this.muz = null;
-
-        // //ovo malo da razradim...
-        // this.promenaRaspolozenja$ = interval((100 - this.godine) * 250).pipe(
-        //     map(vrednost => vrednost - 2),
-        //     filter(vrednost => vrednost < 10),
-        //     tap(vrednost => console.log("Medjuzadovoljstvo: " + vrednost)),
-        //     distinctUntilChanged()
-        // );
-
-        // this.glavniSubscription = this.promenaRaspolozenja$.subscribe(vrednost => this.nivoZadovoljstva = vrednost);
+        this.reaktivnost = new Reaktivnost(this.nivoZadovoljstva);
     }
 
     nacrtajZenu(): HTMLElement
@@ -52,17 +41,36 @@ export class ZenaKomponenta extends ObavezaKomponenta
         `;
         this.kontejner.innerHTML += posebanSadrzajZaZenu;
         this.hendlujKlikove();
+        this.reaktivnost.ofarbajKontejner(this.kontejner, this.nivoZadovoljstva);
 
         return this.kontejner;
     }
 
     hendlujKlikove(): void
     {
-        //ovde sad trebam da oduzmem novac od muza kad kliknem na odgovarajuce dugme, videcu u principu
-        //najpre radim bez rxjs, onda dodajem
-        this.kontejner.querySelector("button[name='btnIzvediZenuNaVeceru']")!.addEventListener("click", (event) => this.izvediZenuNegde(event, 1));
-        this.kontejner.querySelector("button[name='btnIzvediZenuUKupovinu']")!.addEventListener("click", (event) => this.izvediZenuNegde(event, 2));
-        this.kontejner.querySelector("button[name='btnPozajmiPareOdTazbine']")!.addEventListener("click", (event) => this.pozajmiMuzuPareOdTazbine());
+        this.kontejner.querySelector("button[name='btnIzvediZenuNaVeceru']")!.addEventListener("click", (event) => { 
+            this.izvediZenuNegde(event, 1) 
+            this.reaktivnost.zakljucajDugme((<HTMLButtonElement>event.target)!, 10);
+            
+            this.reaktivnost.promenaZadovoljstva$.next(this.nivoZadovoljstva);
+            this.muz.reaktivnaStvar.promenaZadovoljstva$.next(this.muz.nivoZadovoljstva);
+        });
+        this.kontejner.querySelector("button[name='btnIzvediZenuUKupovinu']")!.addEventListener("click", (event) => {
+            this.izvediZenuNegde(event, 2)
+            this.reaktivnost.zakljucajDugme((<HTMLButtonElement>event.target)!, 15);
+            
+            this.reaktivnost.promenaZadovoljstva$.next(this.nivoZadovoljstva);
+            this.muz.reaktivnaStvar.promenaZadovoljstva$.next(this.muz.nivoZadovoljstva);
+        });
+        this.kontejner.querySelector("button[name='btnPozajmiPareOdTazbine']")!.addEventListener("click", (event) => {
+            this.pozajmiMuzuPareOdTazbine();
+            this.reaktivnost.zakljucajDugme((<HTMLButtonElement>event.target)!, 20);
+            
+            this.reaktivnost.promenaZadovoljstva$.next(this.nivoZadovoljstva);
+            this.muz.reaktivnaStvar.promenaZadovoljstva$.next(this.muz.nivoZadovoljstva);
+        });
+
+        
     }
 
     izvediZenuNegde(event: Event, dodatakZadovoljstvu: number): void
@@ -71,7 +79,6 @@ export class ZenaKomponenta extends ObavezaKomponenta
         this.muz.azurirajZadovoljstvo(3);//nema se redux
         //odraditi nekako formulu za ovo...
         this.muz.azurirajNovacOdPlate(-1 * (10 - this.nivoZadovoljstva) * 50 /** this.prohtevZaParama*/);
-       // alert("Zena je izvedena, onda se dugme disable-uje na x sekundi, pa onda omoguci ponovo.");
     }
 
     pozajmiMuzuPareOdTazbine(): void
@@ -80,52 +87,4 @@ export class ZenaKomponenta extends ObavezaKomponenta
         this.muz.azurirajZadovoljstvo(-5);//kazna za sujetu, mada opet vecna debata dal nivo zadovoljstva treba ovde biti
     }
 
-    // postaviMuza(muz)
-    // {
-    //     this.muz = muz;
-    //     /*
-    //     this.glavniSubscription = this.muz.primanjePlate$.pipe(
-    //         sample(interval(1000)),
-    //         distinctUntilChanged()
-    //         ).subscribe(() => { if(this.nivoZadovoljstva < 5)
-    //                                 this.uzmiMuzuPare(); });*/
-
-    //    //this.glavniSubscription.add(this.promenaRaspolozenja$.subscribe(vrednost => this.nivoZadovoljstva = vrednost));
-    // }
-
-    // preracunajPocetnoZadovoljstvo()
-    // {
-    //     let muzevaPlata = this.muz.plata;
-    //     this.nivoZadovoljstva += (Math.trunc(muzevaPlata / 10000) - Math.trunc(this.godine / 10)) % 10;
-    //     this.kontejner.querySelector("input[name='inpZadovoljstvoObaveze']").value = this.nivoZadovoljstva.toString();
-    // }
-
-    // //ovo mogu i da uklonim odavde mislim, posto sam dodao zip tamo gde treba, samo sad da testiram
-    // uzmiMuzuPare()
-    // {
-    //     this.muz.azurirajNovacOdPlate(-1 * (10 - this.nivoZadovoljstva) * 50 * this.prohtevZaParama);
-    // }
-
-    // izvediZenuNegde(event, dodatakZadovoljstvu)
-    // {  
-    //     let dugmeAkcije = event.target;
-    //     if(this.muz.novacOdPlate - parseInt(dugmeAkcije.value) >= 0)
-    //     {
-    //         this.muz.azurirajNovacOdPlate(-1 * parseInt(dugmeAkcije.value));
-    //         this.muz.azurirajZadovoljstvo(dodatakZadovoljstvu);
-    //         super.azurirajZadovoljstvo(dodatakZadovoljstvu);        
-            
-    //         bajaFunkcije.hendlerKlikaSaTajmerom(event);
-    //     }
-    //     else
-    //         dugmeAkcije.innerHTML = "Nema muz pare, a ovo ne treba biti hardkodovano";
-    // }
-
-    // uzmiPareOdTazbine(event)
-    // {
-    //     let dugmeAkcije = event.target;
-    //     this.muz.azurirajStek(parseInt(dugmeAkcije.value) * 10);
-    //     this.muz.azurirajZadovoljstvo(-5);
-    //     bajaFunkcije.hendlerKlikaSaTajmerom(event);
-    // }
 }
