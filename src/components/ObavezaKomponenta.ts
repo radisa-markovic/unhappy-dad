@@ -39,6 +39,7 @@ export class ObavezaKomponenta
                                         name='inpZadovoljstvoObaveze' 
                                         readonly 
                                         value='${this.nivoZadovoljstva}'>
+                <span name="spanZadovoljstva"></span>
             </p>
             <p>
                 Prohtev za parama: <input type='number' 

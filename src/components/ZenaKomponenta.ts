@@ -41,7 +41,9 @@ export class ZenaKomponenta extends ObavezaKomponenta
         `;
         this.kontejner.innerHTML += posebanSadrzajZaZenu;
         this.hendlujKlikove();
-        this.reaktivnost.ofarbajKontejner(this.kontejner, this.nivoZadovoljstva);
+        this.reaktivnost.ofarbajKontejner(this.kontejner, 
+                                         this.kontejner.querySelector<HTMLSpanElement>("span[name='spanZadovoljstva']")!, 
+                                         this.nivoZadovoljstva);
 
         return this.kontejner;
     }
@@ -55,6 +57,7 @@ export class ZenaKomponenta extends ObavezaKomponenta
             this.reaktivnost.promenaZadovoljstva$.next(this.nivoZadovoljstva);
             this.muz.reaktivnaStvar.promenaZadovoljstva$.next(this.muz.nivoZadovoljstva);
         });
+
         this.kontejner.querySelector("button[name='btnIzvediZenuUKupovinu']")!.addEventListener("click", (event) => {
             this.izvediZenuNegde(event, 2)
             this.reaktivnost.zakljucajDugme((<HTMLButtonElement>event.target)!, 15);
@@ -62,6 +65,7 @@ export class ZenaKomponenta extends ObavezaKomponenta
             this.reaktivnost.promenaZadovoljstva$.next(this.nivoZadovoljstva);
             this.muz.reaktivnaStvar.promenaZadovoljstva$.next(this.muz.nivoZadovoljstva);
         });
+
         this.kontejner.querySelector("button[name='btnPozajmiPareOdTazbine']")!.addEventListener("click", (event) => {
             this.pozajmiMuzuPareOdTazbine();
             this.reaktivnost.zakljucajDugme((<HTMLButtonElement>event.target)!, 20);

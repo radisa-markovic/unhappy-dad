@@ -44,18 +44,21 @@ export class CaleKomponenta
                                               name='inpCaletovNivoZadovoljstva' 
                                               readonly 
                                               value='${this.nivoZadovoljstva}' /> 
+                    <span name="spanZadovoljstva"></span>
                 </p>
                 <p>
                     Plata: <input type='number' 
                                   name='inpCaletovaPlata' 
                                   readonly 
                                   value=${plata} /> 
+                    <span name="vremeIsplate"></span>
                 </p>
                 <p>
                     Ukupan novac od plate: <input type='number' 
                                                   name='inpCaletovNovacOdPlate' 
                                                   readonly 
-                                                  value='${novacOdPlate}' />     
+                                                  value='${novacOdPlate}' />
+                    <span name="promenaUIznosuPlate"></span>   
                 </p>
                 <p>
                     Tajni štek: <input type='number' 
@@ -91,7 +94,12 @@ export class CaleKomponenta
                 </div>
             </div>
         `;
-        this.reaktivnaStvar.ofarbajKontejner(this.kontejner, this.nivoZadovoljstva);
+        this.reaktivnaStvar.ofarbajKontejner(this.kontejner, 
+                                             this.kontejner.querySelector<HTMLSpanElement>("span[name='spanZadovoljstva']")!,
+                                             this.nivoZadovoljstva);
+        this.reaktivnaStvar.uplatiCaletuPlatu(this.kontejner, 
+                                              this.caleModel.plata, 
+                                              () => this.azurirajNovacOdPlate(this.caleModel.plata));
         this.hendlujKlikove();
 
         return this.kontejner;
