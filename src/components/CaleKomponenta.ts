@@ -65,6 +65,7 @@ export class CaleKomponenta
                                        name='inpCaletovTajniStek' 
                                        readonly 
                                        value='${tajniStek}' />
+                    <span name="spanTajniStek"></span>
                 </p>
                 <div class="btn-group-vertical">
                     <button name='btnOpljackajKomsiju' 
@@ -95,7 +96,6 @@ export class CaleKomponenta
             </div>
         `;
         this.reaktivnaStvar.ofarbajKontejner(this.kontejner, 
-                                             this.kontejner.querySelector<HTMLSpanElement>("span[name='spanZadovoljstva']")!,
                                              this.nivoZadovoljstva);
         this.reaktivnaStvar.uplatiCaletuPlatu(this.kontejner, 
                                               this.caleModel.plata, 
@@ -107,7 +107,7 @@ export class CaleKomponenta
 
     hendlujKlikove(): void
     {
-        const nizCaletovihOpcija = this.kontejner.querySelectorAll('button[class="btn btn-success"]');
+        const nizCaletovihOpcija = this.kontejner.querySelectorAll<HTMLButtonElement>('button[class="btn btn-success"]');
         nizCaletovihOpcija.forEach((dugme) => {
             dugme.addEventListener("click", (event) => {
                 this.zaradiPareVanPlate(parseInt((<HTMLButtonElement>event.target)!.value));
@@ -116,21 +116,6 @@ export class CaleKomponenta
         });
 
     }    
-
-    // postaviZenu(zena)
-    // {
-    //     this.zena = zena; //ovde bi trebao da posaljem emitovanje zeninog zadovoljstva kao argument...
-    //     this.glavniSubscription.add(zip(this.primanjePlate$, zena.promenaRaspolozenja$).subscribe( ([plata, zeninoZadovoljstvo]) =>{
-    //         if(zeninoZadovoljstvo < 5)
-    //         {
-    //             this.azurirajNovacOdPlate(plata - (1 * (10 - this.zena.nivoZadovoljstva) * 50 * this.zena.prohtevZaParama));
-    //             this.zena.azurirajZadovoljstvo(2);//postaje srecnija kad mu uzme pare
-    //         }
-    //         else
-    //             this.azurirajNovacOdPlate(plata);
-    //         console.log(`Plata: ${plata}, zena zadodovoljna: ${zeninoZadovoljstvo}`);
-    //     }));
-    // }
     
     //moram da vidim kako deca i zena ovo koriste, mogu da ispravim i da ovo izbacim
     zaradiPareVanPlate(vrednostPlena: number): void 
@@ -138,15 +123,10 @@ export class CaleKomponenta
         this.azurirajStek(vrednostPlena);
     }
 
-    // primiPlatu(iznosPlate)
-    // {
-    //     this.azurirajNovacOdPlate(0.7 * iznosPlate);
-    //     this.azurirajStek(0.3 * iznosPlate);
-    // }
-
     azurirajZadovoljstvo(vrednost: number): void
     {
         this.nivoZadovoljstva += vrednost;
+        this.kontejner.querySelector<HTMLSpanElement>("span[name='spanZadovoljstva']")!.innerHTML = `Promena za: ${vrednost}`;
         (<HTMLInputElement>document.querySelector('input[name="inpCaletovNivoZadovoljstva"]'))!.value = this.nivoZadovoljstva.toString();
     }
 
@@ -159,6 +139,7 @@ export class CaleKomponenta
     azurirajStek(vrednost: number): void
     {
         this.caleModel.tajniStek += vrednost;
+        this.kontejner.querySelector<HTMLSpanElement>("span[name='spanTajniStek']")!.innerHTML = `Promena: +${vrednost}`;
         (<HTMLInputElement>document.querySelector('input[name="inpCaletovTajniStek"]'))!.value = this.caleModel.tajniStek.toString();
     }
 

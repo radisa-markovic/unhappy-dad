@@ -42,31 +42,40 @@ export class ZenaKomponenta extends ObavezaKomponenta
         this.kontejner.innerHTML += posebanSadrzajZaZenu;
         this.hendlujKlikove();
         this.reaktivnost.ofarbajKontejner(this.kontejner, 
-                                         this.kontejner.querySelector<HTMLSpanElement>("span[name='spanZadovoljstva']")!, 
-                                         this.nivoZadovoljstva);
+                                          this.nivoZadovoljstva);
 
         return this.kontejner;
     }
 
     hendlujKlikove(): void
     {
-        this.kontejner.querySelector("button[name='btnIzvediZenuNaVeceru']")!.addEventListener("click", (event) => { 
-            this.izvediZenuNegde(event, 1) 
-            this.reaktivnost.zakljucajDugme((<HTMLButtonElement>event.target)!, 10);
+        const dugmeIzvediNaVeceru = this.kontejner.querySelector<HTMLButtonElement>("button[name='btnIzvediZenuNaVeceru']")!;
+        const dugmeIzvediUKupovinu = this.kontejner.querySelector<HTMLButtonElement>("button[name='btnIzvediZenuUKupovinu']")!;
+        const dugmePozajmiPareOdTazbine = this.kontejner.querySelector<HTMLButtonElement>("button[name='btnPozajmiPareOdTazbine']")!
+
+        dugmeIzvediNaVeceru.addEventListener("click", (event) => { 
+            const vremeZakljucavanja = 10;
+            const cenaIzlaska = 5000;
             
+            this.izvediZenuNegde(event, 1, cenaIzlaska);
+            this.reaktivnost.zakljucajDugme((<HTMLButtonElement>event.target)!, vremeZakljucavanja);
             this.reaktivnost.promenaZadovoljstva$.next(this.nivoZadovoljstva);
+
             this.muz.reaktivnaStvar.promenaZadovoljstva$.next(this.muz.nivoZadovoljstva);
         });
 
-        this.kontejner.querySelector("button[name='btnIzvediZenuUKupovinu']")!.addEventListener("click", (event) => {
-            this.izvediZenuNegde(event, 2)
-            this.reaktivnost.zakljucajDugme((<HTMLButtonElement>event.target)!, 15);
-            
+        dugmeIzvediUKupovinu.addEventListener("click", (event) => {
+            const vremeZakljucavanja = 15;
+            const cenaIzlaska = 10000;
+
+            this.izvediZenuNegde(event, 2, cenaIzlaska);
+            this.reaktivnost.zakljucajDugme((<HTMLButtonElement>event.target)!, vremeZakljucavanja);
             this.reaktivnost.promenaZadovoljstva$.next(this.nivoZadovoljstva);
+            
             this.muz.reaktivnaStvar.promenaZadovoljstva$.next(this.muz.nivoZadovoljstva);
         });
 
-        this.kontejner.querySelector("button[name='btnPozajmiPareOdTazbine']")!.addEventListener("click", (event) => {
+        dugmePozajmiPareOdTazbine.addEventListener("click", (event) => {
             this.pozajmiMuzuPareOdTazbine();
             this.reaktivnost.zakljucajDugme((<HTMLButtonElement>event.target)!, 20);
             
@@ -74,15 +83,14 @@ export class ZenaKomponenta extends ObavezaKomponenta
             this.muz.reaktivnaStvar.promenaZadovoljstva$.next(this.muz.nivoZadovoljstva);
         });
 
-        
     }
 
-    izvediZenuNegde(event: Event, dodatakZadovoljstvu: number): void
+    izvediZenuNegde(event: Event, dodatakZadovoljstvu: number, osnovnaCena: number): void
     {
         super.azurirajZadovoljstvo(dodatakZadovoljstvu);
-        this.muz.azurirajZadovoljstvo(3);//nema se redux
+        this.muz.azurirajZadovoljstvo(dodatakZadovoljstvu);//nema se redux
         //odraditi nekako formulu za ovo...
-        this.muz.azurirajNovacOdPlate(-1 * (10 - this.nivoZadovoljstva) * 50 /** this.prohtevZaParama*/);
+        this.muz.azurirajNovacOdPlate(-1 * (10 - this.nivoZadovoljstva) * osnovnaCena /** this.prohtevZaParama*/);
     }
 
     pozajmiMuzuPareOdTazbine(): void

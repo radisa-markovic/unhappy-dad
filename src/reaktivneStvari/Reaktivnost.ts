@@ -38,7 +38,7 @@ export default class Reaktivnost
        tajmerZaDugme$.subscribe();
     }
 
-    ofarbajKontejner(kontejner: HTMLElement, prikazSrece: HTMLSpanElement, nivoZadovoljstva: number): void
+    ofarbajKontejner(kontejner: HTMLElement, nivoZadovoljstva: number): void
     {
         this.promenaZadovoljstva$.subscribe((nivoZadovoljstva) => {
 
@@ -50,9 +50,6 @@ export default class Reaktivnost
                 kontejner.style.backgroundColor = 'green';
 
             //treba da se doradi... mada ono
-            console.log(prikazSrece);
-            console.log(nivoZadovoljstva);
-            prikazSrece.innerHTML = `Novo zadovoljstvo ${nivoZadovoljstva}`; 
         });
     }
 
