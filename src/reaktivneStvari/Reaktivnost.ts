@@ -24,9 +24,9 @@ export default class Reaktivnost
         const stariTekst = komponenta.innerHTML;
 
         const tajmerZaDugme$ = interval(1000).pipe(
-            map(broj =>  vremeTrajanja - broj), //za brojanje unazad
+            map((broj: number) =>  vremeTrajanja - broj), //za brojanje unazad
             take(vremeTrajanja + 1), //+1 je da bi brojao do 0, ovako izgleda nece da je prikaze na HTML, iako odbroji dotle
-            tap((broj) => {
+            tap((broj: number) => {
                 komponenta.innerHTML = `${stariTekst} ${broj.toString()}s`;
             }),
             finalize(() => {
@@ -40,7 +40,7 @@ export default class Reaktivnost
 
     ofarbajKontejner(kontejner: HTMLElement, nivoZadovoljstva: number): void
     {
-        this.promenaZadovoljstva$.subscribe((nivoZadovoljstva) => {
+        this.promenaZadovoljstva$.subscribe((nivoZadovoljstva: number) => {
 
             if(nivoZadovoljstva < 3)
                 kontejner.style.backgroundColor = 'red';
@@ -62,11 +62,11 @@ export default class Reaktivnost
         const vremeUplate = 10;
         
         const tajmerPlate$ = interval(1000).pipe(
-            map(vrednost => vrednost % vremeUplate),
-            map(broj => vremeUplate - broj)
+            map((vrednost: number) => vrednost % vremeUplate),
+            map((broj: number) => vremeUplate - broj)
         );
 
-        tajmerPlate$.subscribe((vrednost) => {
+        tajmerPlate$.subscribe((vrednost: number) => {
             kontejnerZaVremeIsplate.innerHTML = `Nova uplata za: ${vrednost.toString()} s`;
             if(vrednost === 1)
             {

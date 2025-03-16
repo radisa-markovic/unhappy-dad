@@ -111,7 +111,9 @@ export class CaleKomponenta
         nizCaletovihOpcija.forEach((dugme) => {
             dugme.addEventListener("click", (event) => {
                 this.zaradiPareVanPlate(parseInt((<HTMLButtonElement>event.target)!.value));
-                this.reaktivnaStvar.zakljucajDugme(<HTMLButtonElement>event.target!, 15);//vreme treba biti dinamicno        
+                this.reaktivnaStvar.zakljucajDugme(<HTMLButtonElement>event.target!, 15);//vreme treba biti dinamicno  
+                if(this.krajnjiCiljUZivotu())
+                    this.zavrsiIgru();      
             });
         });
 
@@ -143,17 +145,17 @@ export class CaleKomponenta
         (<HTMLInputElement>document.querySelector('input[name="inpCaletovTajniStek"]'))!.value = this.caleModel.tajniStek.toString();
     }
 
-    // krajnjiCiljUZivotu()
-    // {
-    //     return (this.tajniStek >= 200000 && this.nivoZadovoljstva >= 10)
-    // }
+    krajnjiCiljUZivotu()
+    {
+        return (this.caleModel.tajniStek >= 200000 && this.nivoZadovoljstva >= 10)
+    }
 
-    // zavrsiIgru()
-    // {
-    //     alert(`Pobedio sam, imam ${this.tajniStek} i srecan sam u iznosu od ${this.nivoZadovoljstva}`);
-    //     document.querySelectorAll(`button`).forEach(dugme => {
-    //         dugme.disabled = true
-    //     });
-    //     this.glavniSubscription.unsubscribe();
-    // }
+    zavrsiIgru()
+    {
+        alert(`Pobedio sam, imam ${this.caleModel.tajniStek} i srecan sam u iznosu od ${this.nivoZadovoljstva}`);
+        document.querySelectorAll(`button`).forEach(dugme => {
+            dugme.disabled = true
+        });
+        // this.glavniSubscription.unsubscribe();
+    }
 }
